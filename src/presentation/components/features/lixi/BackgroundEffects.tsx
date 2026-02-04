@@ -20,11 +20,23 @@ interface Particle {
   delay: number;
 }
 
+interface Petal {
+  id: number;
+  x: number;
+  duration: number;
+  delay: number;
+  rotation: number;
+}
+
 export function BackgroundEffects() {
   const [lanterns, setLanterns] = useState<Lantern[]>([]);
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [petals, setPetals] = useState<Petal[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+
     // Generate lanterns
     const newLanterns: Lantern[] = [];
     for (let i = 0; i < 8; i++) {
@@ -52,6 +64,19 @@ export function BackgroundEffects() {
       });
     }
     setParticles(newParticles);
+
+    // Generate petals
+    const newPetals: Petal[] = [];
+    for (let i = 0; i < 15; i++) {
+      newPetals.push({
+        id: i,
+        x: Math.random() * 100,
+        duration: 8 + Math.random() * 6,
+        delay: Math.random() * 8,
+        rotation: Math.random() * 360,
+      });
+    }
+    setPetals(newPetals);
   }, []);
 
   const getLanternColor = (color: Lantern['color']) => {
@@ -90,7 +115,7 @@ export function BackgroundEffects() {
       </div>
 
       {/* Floating lanterns */}
-      {lanterns.map((lantern) => {
+      {mounted && lanterns.map((lantern) => {
         const colors = getLanternColor(lantern.color);
         return (
           <div
@@ -148,7 +173,7 @@ export function BackgroundEffects() {
       })}
 
       {/* Golden particles */}
-      {particles.map((particle) => (
+      {mounted && particles.map((particle) => (
         <div
           key={particle.id}
           className="absolute rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 animate-particle-float"
@@ -165,22 +190,22 @@ export function BackgroundEffects() {
       ))}
 
       {/* Cherry blossom petals */}
-      {[...Array(15)].map((_, i) => (
+      {mounted && petals.map((petal) => (
         <div
-          key={`petal-${i}`}
+          key={`petal-${petal.id}`}
           className="absolute animate-petal-fall"
           style={{
-            left: `${Math.random() * 100}%`,
+            left: `${petal.x}%`,
             top: '-20px',
-            animationDuration: `${8 + Math.random() * 6}s`,
-            animationDelay: `${Math.random() * 8}s`,
+            animationDuration: `${petal.duration}s`,
+            animationDelay: `${petal.delay}s`,
           }}
         >
           <div
             className="w-3 h-3 bg-gradient-to-br from-pink-200 to-pink-300 rounded-full opacity-70"
             style={{
               clipPath: 'ellipse(50% 35% at 50% 50%)',
-              transform: `rotate(${Math.random() * 360}deg)`,
+              transform: `rotate(${petal.rotation}deg)`,
             }}
           />
         </div>
