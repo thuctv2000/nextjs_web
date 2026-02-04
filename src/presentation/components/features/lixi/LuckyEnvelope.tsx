@@ -163,18 +163,9 @@ export function LuckyEnvelope({
               'flex flex-col items-center justify-center gap-2 p-3',
               'text-center',
               // Selected envelope: bright and highlighted
-              isOpened && [
-                'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-100',
-                'border-2 border-amber-400',
-                'shadow-lg shadow-amber-300/50',
-              ],
+              isOpened && 'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-100 border-2 border-amber-400 shadow-lg shadow-amber-300/50',
               // Revealed envelopes: more muted style
-              isRevealed && [
-                'bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100',
-                'border border-gray-300',
-                'shadow-md shadow-gray-200/50',
-                'opacity-80',
-              ]
+              isRevealed && 'bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 border border-gray-300 shadow-md shadow-gray-200/50 opacity-80'
             )}
           >
             <span className="text-2xl">{isOpened ? '🎊' : '🧧'}</span>
