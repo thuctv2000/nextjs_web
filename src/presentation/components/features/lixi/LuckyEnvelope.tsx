@@ -10,6 +10,7 @@ interface LuckyEnvelopeProps {
     message: string;
   };
   isOpened: boolean;
+  isRevealed?: boolean;
   isDisabled: boolean;
   onOpen: (id: number) => void;
   delay?: number;
@@ -19,6 +20,7 @@ export function LuckyEnvelope({
   id,
   reward,
   isOpened,
+  isRevealed = false,
   isDisabled,
   onOpen,
   delay = 0,
@@ -26,20 +28,23 @@ export function LuckyEnvelope({
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleClick = () => {
-    if (isOpened || isDisabled || isAnimating) return;
+    if (isOpened || isDisabled || isAnimating || isRevealed) return;
     setIsAnimating(true);
     setTimeout(() => {
       onOpen(id);
     }, 600);
   };
 
+  // Show revealed state (other envelopes after one is opened)
+  const showReward = isOpened || isRevealed;
+
   return (
     <div
       className={cn(
         'relative cursor-pointer transition-all duration-300',
         'w-28 h-40 sm:w-32 sm:h-44 md:w-36 md:h-48',
-        isDisabled && !isOpened && 'opacity-50 cursor-not-allowed',
-        isOpened && 'cursor-default'
+        isDisabled && !isOpened && !isRevealed && 'opacity-50 cursor-not-allowed',
+        (isOpened || isRevealed) && 'cursor-default'
       )}
       style={{ animationDelay: `${delay}ms` }}
       onClick={handleClick}
@@ -50,7 +55,7 @@ export function LuckyEnvelope({
           'relative w-full h-full transform-gpu',
           'animate-float',
           isAnimating && 'animate-envelope-open',
-          isOpened && 'opacity-0 scale-0'
+          showReward && 'opacity-0 scale-0'
         )}
         style={{ animationDelay: `${delay}ms` }}
       >
@@ -60,7 +65,7 @@ export function LuckyEnvelope({
             'absolute -inset-2 rounded-2xl opacity-0 transition-opacity duration-300',
             'bg-gradient-to-r from-yellow-400/50 via-amber-300/50 to-yellow-400/50',
             'blur-xl group-hover:opacity-100',
-            !isDisabled && !isOpened && 'hover:opacity-100'
+            !isDisabled && !isOpened && !isRevealed && 'hover:opacity-100'
           )}
         />
 
@@ -74,6 +79,7 @@ export function LuckyEnvelope({
             'transition-all duration-300',
             !isDisabled &&
               !isOpened &&
+              !isRevealed &&
               'hover:shadow-2xl hover:shadow-amber-400/40 hover:scale-105 hover:-translate-y-2'
           )}
         >
@@ -144,7 +150,7 @@ export function LuckyEnvelope({
       </div>
 
       {/* Reward revealed state */}
-      {isOpened && (
+      {showReward && (
         <div
           className={cn(
             'absolute inset-0 flex items-center justify-center',
@@ -154,18 +160,36 @@ export function LuckyEnvelope({
           <div
             className={cn(
               'w-full h-full rounded-xl',
-              'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-100',
-              'border-2 border-amber-400',
-              'shadow-lg shadow-amber-300/50',
               'flex flex-col items-center justify-center gap-2 p-3',
-              'text-center'
+              'text-center',
+              // Selected envelope: bright and highlighted
+              isOpened && [
+                'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-100',
+                'border-2 border-amber-400',
+                'shadow-lg shadow-amber-300/50',
+              ],
+              // Revealed envelopes: more muted style
+              isRevealed && [
+                'bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100',
+                'border border-gray-300',
+                'shadow-md shadow-gray-200/50',
+                'opacity-80',
+              ]
             )}
           >
-            <span className="text-2xl">🎊</span>
-            <span className="text-red-600 font-bold text-sm sm:text-base">
+            <span className="text-2xl">{isOpened ? '🎊' : '🧧'}</span>
+            <span className={cn(
+              'font-bold text-sm sm:text-base',
+              isOpened ? 'text-red-600' : 'text-gray-600'
+            )}>
               {reward.amount}
             </span>
-            <span className="text-amber-700 text-xs">{reward.message}</span>
+            <span className={cn(
+              'text-xs',
+              isOpened ? 'text-amber-700' : 'text-gray-500'
+            )}>
+              {reward.message}
+            </span>
           </div>
         </div>
       )}

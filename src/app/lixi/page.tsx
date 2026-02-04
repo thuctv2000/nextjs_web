@@ -1,50 +1,86 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { LuckyEnvelope } from '@/presentation/components/features/lixi/LuckyEnvelope';
 import { BackgroundEffects } from '@/presentation/components/features/lixi/BackgroundEffects';
 import { RewardModal } from '@/presentation/components/features/lixi/RewardModal';
 import { cn } from '@/shared/utils/cn';
+import { getActiveLixiConfig, LixiEnvelope } from '@/lib/api';
 
-// Reward configurations
-const REWARDS = [
-  { amount: '100K VNĐ', message: 'Phát Tài Phát Lộc! 💰' },
-  { amount: '50K VNĐ', message: 'An Khang Thịnh Vượng! 🎊' },
-  { amount: '200K VNĐ', message: 'Vạn Sự Như Ý! 🧧' },
-  { amount: '20K VNĐ', message: 'Năm Mới Bình An! 🏮' },
-  { amount: '500K VNĐ', message: 'Đại Cát Đại Lợi! 🐲' },
-  { amount: '10K VNĐ', message: 'Tấn Tài Tấn Lộc! ✨' },
-  { amount: '1 Triệu VNĐ', message: 'Phúc Lộc Thọ! 🎆' },
-  { amount: '30K VNĐ', message: 'Mã Đáo Thành Công! 🐎' },
-  { amount: '88K VNĐ', message: 'Cung Hỷ Phát Tài! 🎉' },
-  { amount: '168K VNĐ', message: 'Lộc Vào Như Nước! 💫' },
-  { amount: '66K VNĐ', message: 'Vui Vẻ Hạnh Phúc! 😊' },
-  { amount: '888K VNĐ', message: 'Tài Lộc Đầy Nhà! 🏠' },
+// Fallback rewards when API is unavailable
+const FALLBACK_REWARDS: LixiEnvelope[] = [
+  { id: 1, amount: '100K VNĐ', message: 'Phát Tài Phát Lộc!' },
+  { id: 2, amount: '50K VNĐ', message: 'An Khang Thịnh Vượng!' },
+  { id: 3, amount: '200K VNĐ', message: 'Vạn Sự Như Ý!' },
+  { id: 4, amount: '20K VNĐ', message: 'Năm Mới Bình An!' },
+  { id: 5, amount: '500K VNĐ', message: 'Đại Cát Đại Lợi!' },
+  { id: 6, amount: '10K VNĐ', message: 'Tấn Tài Tấn Lộc!' },
+  { id: 7, amount: '1 Triệu VNĐ', message: 'Phúc Lộc Thọ!' },
+  { id: 8, amount: '30K VNĐ', message: 'Mã Đáo Thành Công!' },
+  { id: 9, amount: '88K VNĐ', message: 'Cung Hỷ Phát Tài!' },
+  { id: 10, amount: '168K VNĐ', message: 'Lộc Vào Như Nước!' },
+  { id: 11, amount: '66K VNĐ', message: 'Vui Vẻ Hạnh Phúc!' },
+  { id: 12, amount: '888K VNĐ', message: 'Tài Lộc Đầy Nhà!' },
 ];
 
 export default function LixiPage() {
-  const [openedEnvelopes, setOpenedEnvelopes] = useState<Set<number>>(new Set());
+  const [rewards, setRewards] = useState<LixiEnvelope[]>(FALLBACK_REWARDS);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedReward, setSelectedReward] = useState<{
     amount: string;
     message: string;
   } | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [revealAll, setRevealAll] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleOpenEnvelope = useCallback((id: number) => {
-    setOpenedEnvelopes((prev) => new Set([...prev, id]));
-    setSelectedReward(REWARDS[id]);
-    setShowModal(true);
+  // Fetch config from API
+  useEffect(() => {
+    async function fetchConfig() {
+      try {
+        const config = await getActiveLixiConfig();
+        if (config.envelopes && config.envelopes.length === 12) {
+          setRewards(config.envelopes);
+        }
+      } catch (error) {
+        console.warn('Using fallback rewards:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchConfig();
   }, []);
 
+  const handleOpenEnvelope = useCallback((id: number) => {
+    const reward = rewards.find((r) => r.id === id) || rewards[id - 1];
+    setSelectedId(id);
+    setSelectedReward(reward);
+    setShowModal(true);
+    // After 1.5s delay, reveal all other envelopes
+    setTimeout(() => setRevealAll(true), 1500);
+  }, [rewards]);
+
   const handleReplay = useCallback(() => {
-    setOpenedEnvelopes(new Set());
+    setSelectedId(null);
     setSelectedReward(null);
     setShowModal(false);
+    setRevealAll(false);
   }, []);
 
   const handleCloseModal = useCallback(() => {
     setShowModal(false);
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-amber-50 to-red-100">
+        <div className="text-center">
+          <div className="animate-bounce text-6xl mb-4">🧧</div>
+          <p className="text-amber-700 font-medium">Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -101,13 +137,14 @@ export default function LixiPage() {
               'max-w-5xl'
             )}
           >
-            {REWARDS.map((reward, index) => (
+            {rewards.map((reward, index) => (
               <LuckyEnvelope
-                key={index}
-                id={index}
+                key={reward.id}
+                id={reward.id}
                 reward={reward}
-                isOpened={openedEnvelopes.has(index)}
-                isDisabled={openedEnvelopes.size > 0 && !openedEnvelopes.has(index)}
+                isOpened={selectedId === reward.id}
+                isRevealed={revealAll && selectedId !== reward.id}
+                isDisabled={selectedId !== null && selectedId !== reward.id && !revealAll}
                 onOpen={handleOpenEnvelope}
                 delay={index * 100}
               />
@@ -117,8 +154,8 @@ export default function LixiPage() {
 
         {/* Footer section */}
         <footer className="pb-8 text-center">
-          {/* Replay button (shows when at least one envelope is opened) */}
-          {openedEnvelopes.size > 0 && (
+          {/* Replay button (shows when an envelope is opened) */}
+          {selectedId !== null && (
             <button
               onClick={handleReplay}
               className={cn(
