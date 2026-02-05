@@ -12,11 +12,6 @@ export class AuthRepositoryImpl implements AuthRepository {
       email,
       password,
     });
-
-    if (response.status !== 200) {
-      throw new Error('Login failed');
-    }
-
     return response.data;
   }
 
@@ -25,11 +20,6 @@ export class AuthRepositoryImpl implements AuthRepository {
       email,
       password,
     });
-
-    if (response.status !== 201 && response.status !== 200) {
-      throw new Error('Registration failed');
-    }
-
     return response.data;
   }
 }

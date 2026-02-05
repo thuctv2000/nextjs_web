@@ -1,4 +1,5 @@
 import { IHttpClient, RequestConfig, HttpResponse } from '@/core/application/interfaces';
+import { ApiError } from '@/lib/errors';
 
 /**
  * Infrastructure - HTTP Client Implementation
@@ -17,31 +18,42 @@ export class HttpClient implements IHttpClient {
     data?: unknown,
     config?: RequestConfig
   ): Promise<HttpResponse<T>> {
-    const fullUrl = new URL(url, this.baseUrl);
+    try {
+      const fullUrl = new URL(url, this.baseUrl);
 
-    if (config?.params) {
-      Object.entries(config.params).forEach(([key, value]) => {
-        fullUrl.searchParams.append(key, String(value));
+      if (config?.params) {
+        Object.entries(config.params).forEach(([key, value]) => {
+          fullUrl.searchParams.append(key, String(value));
+        });
+      }
+
+      const response = await fetch(fullUrl.toString(), {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...config?.headers,
+        },
+        body: data ? JSON.stringify(data) : undefined,
+        signal: config?.timeout ? AbortSignal.timeout(config.timeout) : undefined,
       });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw ApiError.fromResponse(response.status, responseData);
+      }
+
+      return {
+        data: responseData as T,
+        status: response.status,
+        statusText: response.statusText,
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new ApiError('Network error occurred', 0);
     }
-
-    const response = await fetch(fullUrl.toString(), {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...config?.headers,
-      },
-      body: data ? JSON.stringify(data) : undefined,
-      signal: config?.timeout ? AbortSignal.timeout(config.timeout) : undefined,
-    });
-
-    const responseData = await response.json();
-
-    return {
-      data: responseData as T,
-      status: response.status,
-      statusText: response.statusText,
-    };
   }
 
   async get<T>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
