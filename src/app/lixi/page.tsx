@@ -126,6 +126,25 @@ export default function LixiPage() {
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 rounded-full border border-red-200">
             <span className="text-red-600 font-bold">🐍 Năm Ất Tỵ 2025</span>
           </div>
+
+          {/* Mode switcher */}
+          <div className="mt-6 flex justify-center">
+            <a
+              href="/lixi/greeting"
+              className={cn(
+                'inline-flex items-center gap-2 px-4 py-2',
+                'bg-white/80 backdrop-blur-sm rounded-full',
+                'border-2 border-amber-300',
+                'text-amber-700 font-medium text-sm',
+                'hover:bg-amber-50 hover:border-amber-400',
+                'transition-all duration-300',
+                'shadow-md hover:shadow-lg'
+              )}
+            >
+              <span>📜</span>
+              <span>Xem phiên bản Thiệp Chúc</span>
+            </a>
+          </div>
         </header>
 
         {/* Envelopes grid */}
