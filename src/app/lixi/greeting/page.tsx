@@ -1,99 +1,114 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { GreetingCardEnvelope } from '@/presentation/components/features/lixi/GreetingCardEnvelope';
 import { BackgroundEffects } from '@/presentation/components/features/lixi/BackgroundEffects';
 import { cn } from '@/shared/utils/cn';
+import { getActiveLixiConfig, LixiEnvelope } from '@/lib/api';
 
-// Sample greeting messages for Tet
-const GREETING_CARDS = [
-  {
-    id: 1,
-    title: 'CHÚC MỪNG NĂM MỚI',
-    message: 'Mong rằng năm mới sẽ mở ra cho bạn những cánh cửa lớn lành, nơi sự nỗ lực được đáp lại bằng thành công rực rờ.',
-    amount: '100K VNĐ',
-  },
-  {
-    id: 2,
-    title: 'PHÁT TÀI PHÁT LỘC',
-    message: 'Chúc gia đình bạn luôn hạnh phúc, ấm no, tràn đầy tiếng cười và yêu thương trong năm mới.',
-    amount: '200K VNĐ',
-  },
-  {
-    id: 3,
-    title: 'VẠN SỰ NHƯ Ý',
-    message: 'Năm mới chúc bạn sức khỏe dồi dào, công việc thuận lợi, gia đình hạnh phúc và tài lộc đầy nhà.',
-    amount: '500K VNĐ',
-  },
-  {
-    id: 4,
-    title: 'AN KHANG THỊNH VƯỢNG',
-    message: 'Chúc năm mới bình an, mọi điều tốt đẹp sẽ đến với bạn và những người thân yêu.',
-    amount: '50K VNĐ',
-  },
-  {
-    id: 5,
-    title: 'ĐẠI CÁT ĐẠI LỢI',
-    message: 'Năm mới hạnh phúc, may mắn và thành công. Mọi ước mơ của bạn đều sẽ thành hiện thực.',
-    amount: '1,000K VNĐ',
-  },
-  {
-    id: 6,
-    title: 'PHÚC LỘC THỌ',
-    message: 'Chúc bạn một năm mới tràn đầy năng lượng tích cực, gặp nhiều may mắn và niềm vui.',
-    amount: '88K VNĐ',
-  },
-  {
-    id: 7,
-    title: 'TÀI LỘC ĐẦY NHÀ',
-    message: 'Mong rằng năm mới sẽ mang đến cho bạn nhiều cơ hội mới, thành công mới và niềm vui mới.',
-    amount: '888k VNĐ',
-  },
-  {
-    id: 8,
-    title: 'CUNG HỶ PHÁT TÀI',
-    message: 'Chúc bạn và gia đình một năm mới tràn đầy sức khỏe, tài lộc và niềm vui.',
-    amount: '168k VNĐ',
-  },
-  {
-    id: 9,
-    title: 'MÃ ĐÁO THÀNH CÔNG',
-    message: 'Năm mới chúc bạn luôn giữ được tinh thần lạc quan, vượt qua mọi khó khăn và đạt được thành công rực rỡ.',
-    amount: '66k VNĐ',
-  },
-  {
-    id: 10,
-    title: 'TẤN TÀI TẤN LỘC',
-    message: 'Chúc mừng năm mới! Hy vọng năm nới sẽ mang lại cho bạn vô vàn niềm vui và thành công.',
-    amount: '128K VNĐ',
-  },
-  {
-    id: 11,
-    title: 'BÌNH AN VUI VẺ',
-    message: 'Chúc bạn một năm mới an lành, hạnh phúc bên gia đình và những người thân yêu.',
-    amount: '38K VNĐ',
-  },
-  {
-    id: 12,
-    title: 'LỘC VÀO NHƯ NƯỚC',
-    message: 'Năm mới nhiều tài lộc, công việc hanh thông, gia đạo yên vui và mọi sự như ý.',
-    amount: '999K VNĐ',
-  },
+const FALLBACK_TIERS: LixiEnvelope[] = [
+  { id: 1, amount: '10K VNĐ', message: 'Năm Mới Bình An!', rate: 0.30 },
+  { id: 2, amount: '20K VNĐ', message: 'Tấn Tài Tấn Lộc!', rate: 0.25 },
+  { id: 3, amount: '50K VNĐ', message: 'An Khang Thịnh Vượng!', rate: 0.15 },
+  { id: 4, amount: '88K VNĐ', message: 'Cung Hỷ Phát Tài!', rate: 0.10 },
+  { id: 5, amount: '100K VNĐ', message: 'Phát Tài Phát Lộc!', rate: 0.08 },
+  { id: 6, amount: '168K VNĐ', message: 'Lộc Vào Như Nước!', rate: 0.05 },
+  { id: 7, amount: '200K VNĐ', message: 'Vạn Sự Như Ý!', rate: 0.03 },
+  { id: 8, amount: '500K VNĐ', message: 'Đại Cát Đại Lợi!', rate: 0.02 },
+  { id: 9, amount: '888K VNĐ', message: 'Tài Lộc Đầy Nhà!', rate: 0.01 },
+  { id: 10, amount: '1 Triệu VNĐ', message: 'Phúc Lộc Thọ!', rate: 0.005 },
+  { id: 11, amount: '66K VNĐ', message: 'Vui Vẻ Hạnh Phúc!', rate: 0.005 },
+  { id: 12, amount: '30K VNĐ', message: 'Mã Đáo Thành Công!', rate: 0.005 },
 ];
 
-export default function GreetingPage() {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [revealAll, setRevealAll] = useState(false);
+interface EnvelopeSlot {
+  amount: string;
+  message: string;
+}
 
-  const handleOpenEnvelope = useCallback((id: number) => {
-    setSelectedId(id);
-    // After 2.5s delay (after bi-fold and card unfolds), reveal all other cards
-    setTimeout(() => setRevealAll(true), 2500);
+type Phase = 'picking' | 'revealed' | 'showing-all';
+
+function pickByRate(tiers: LixiEnvelope[]): LixiEnvelope {
+  const totalWeight = tiers.reduce((sum, t) => sum + t.rate, 0);
+  let random = Math.random() * totalWeight;
+  for (const tier of tiers) {
+    random -= tier.rate;
+    if (random <= 0) return tier;
+  }
+  return tiers[tiers.length - 1];
+}
+
+function generateRound(tiers: LixiEnvelope[]): EnvelopeSlot[] {
+  const slots: EnvelopeSlot[] = [];
+  for (let i = 0; i < 12; i++) {
+    const picked = pickByRate(tiers);
+    slots.push({ amount: picked.amount, message: picked.message });
+  }
+  // Shuffle
+  for (let i = slots.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [slots[i], slots[j]] = [slots[j], slots[i]];
+  }
+  return slots;
+}
+
+export default function GreetingPage() {
+  const [tiers, setTiers] = useState<LixiEnvelope[]>(FALLBACK_TIERS);
+  const [envelopes, setEnvelopes] = useState<EnvelopeSlot[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [phase, setPhase] = useState<Phase>('picking');
+  const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Fetch config on mount
+  useEffect(() => {
+    let cancelled = false;
+    getActiveLixiConfig()
+      .then((config) => {
+        if (!cancelled && config.envelopes?.length > 0) {
+          setTiers(config.envelopes);
+        }
+      })
+      .catch(() => {
+        // Use fallback tiers
+      });
+    return () => { cancelled = true; };
   }, []);
 
+  // Generate initial round once tiers are set
+  useEffect(() => {
+    setEnvelopes(generateRound(tiers));
+  }, [tiers]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    };
+  }, []);
+
+  const selectedEnvelope = selectedIndex !== null ? envelopes[selectedIndex] : null;
+
+  const handleOpenEnvelope = useCallback((index: number) => {
+    if (phase !== 'picking') return;
+    setSelectedIndex(index);
+    setPhase('revealed');
+  }, [phase]);
+
   const handleReplay = useCallback(() => {
-    setSelectedId(null);
-    setRevealAll(false);
+    if (phase !== 'revealed') return;
+    setPhase('showing-all');
+
+    // After 3 seconds, auto-reset with new round
+    resetTimerRef.current = setTimeout(() => {
+      setEnvelopes(generateRound(tiers));
+      setSelectedIndex(null);
+      setPhase('picking');
+    }, 3000);
+  }, [phase, tiers]);
+
+  const handleCloseDialog = useCallback(() => {
+    // Closing the dialog just closes the popup, keeps the revealed state
+    // User should click "Chơi Lại" to proceed
   }, []);
 
   return (
@@ -122,7 +137,7 @@ export default function GreetingPage() {
           <h1
             className={cn(
               'text-4xl sm:text-5xl md:text-6xl font-bold',
-              'bg-gradient-to-r from-red-600 via-amber-500 to-red-600',
+              'bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300',
               'bg-clip-text text-transparent',
               'drop-shadow-lg',
               'animate-text-shimmer bg-[length:200%_auto]'
@@ -132,13 +147,13 @@ export default function GreetingPage() {
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-3 text-lg sm:text-xl text-amber-700 font-medium">
+          <p className="mt-3 text-lg sm:text-xl text-amber-200 font-medium">
             Chọn một bao lì xì để mở thiệp chúc Tết! 🎊
           </p>
 
           {/* Year display */}
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 rounded-full border border-red-200">
-            <span className="text-red-600 font-bold">🐍 Năm Ất Tỵ 2025</span>
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-amber-900/40 rounded-full border border-amber-400/50">
+            <span className="text-amber-300 font-bold">🐍 Năm Ất Tỵ 2025</span>
           </div>
 
           {/* Mode switcher */}
@@ -147,10 +162,10 @@ export default function GreetingPage() {
               href="/lixi"
               className={cn(
                 'inline-flex items-center gap-2 px-4 py-2',
-                'bg-white/80 backdrop-blur-sm rounded-full',
-                'border-2 border-amber-300',
-                'text-amber-700 font-medium text-sm',
-                'hover:bg-amber-50 hover:border-amber-400',
+                'bg-amber-900/40 backdrop-blur-sm rounded-full',
+                'border-2 border-amber-400/50',
+                'text-amber-200 font-medium text-sm',
+                'hover:bg-amber-900/60 hover:border-amber-300',
                 'transition-all duration-300',
                 'shadow-md hover:shadow-lg'
               )}
@@ -164,21 +179,23 @@ export default function GreetingPage() {
         {/* Envelopes grid */}
         <main className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="grid gap-4 sm:gap-6 md:gap-8 max-w-7xl grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6">
-            {GREETING_CARDS.map((card, index) => (
+            {envelopes.map((envelope, index) => (
               <GreetingCardEnvelope
-                key={card.id}
-                id={card.id}
-                isOpened={selectedId === card.id}
-                isDisabled={selectedId !== null}
+                key={`${phase}-${index}`}
+                id={index}
+                isOpened={selectedIndex === index}
+                isDisabled={phase !== 'picking'}
                 onOpen={handleOpenEnvelope}
                 delay={index * 100}
+                amount={envelope.amount}
+                isRevealed={phase === 'showing-all' && selectedIndex !== index}
               />
             ))}
           </div>
         </main>
 
         {/* Greeting Dialog Overlay */}
-        {selectedId !== null && (
+        {phase === 'revealed' && selectedEnvelope && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div
               className="relative w-full max-w-2xl animate-card-unfold"
@@ -192,7 +209,7 @@ export default function GreetingPage() {
 
               {/* Close button - top right of white box */}
               <button
-                onClick={handleReplay}
+                onClick={handleCloseDialog}
                 className="absolute top-[21%] right-[25%] w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm sm:text-base z-10 transition-colors"
               >
                 ✕
@@ -210,7 +227,7 @@ export default function GreetingPage() {
                       textShadow: '0 0 10px rgba(251,191,36,0.6), 0 0 20px rgba(251,191,36,0.4), 0 0 40px rgba(251,191,36,0.2)',
                     }}
                   >
-                    {GREETING_CARDS.find((c) => c.id === selectedId)?.title}
+                    CHÚC MỪNG NĂM MỚI
                   </h2>
                   <p
                     className="text-center text-sm sm:text-base md:text-lg text-red-800 leading-relaxed font-bold"
@@ -218,7 +235,7 @@ export default function GreetingPage() {
                       fontFamily: 'var(--font-dancing), cursive',
                     }}
                   >
-                    &ldquo;{GREETING_CARDS.find((c) => c.id === selectedId)?.message}&rdquo;
+                    &ldquo;{selectedEnvelope.message}&rdquo;
                   </p>
                 </div>
 
@@ -233,7 +250,7 @@ export default function GreetingPage() {
                       textShadow: '0 2px 4px rgba(0,0,0,0.5)',
                     }}
                   >
-                    {GREETING_CARDS.find((c) => c.id === selectedId)?.amount}
+                    {selectedEnvelope.amount}
                   </p>
                 </div>
 
@@ -261,7 +278,7 @@ export default function GreetingPage() {
         {/* Footer section */}
         <footer className="pb-8 text-center">
           {/* Replay button (shows when an envelope is opened) */}
-          {selectedId !== null && (
+          {phase === 'revealed' && (
             <button
               onClick={handleReplay}
               className={cn(
@@ -281,6 +298,13 @@ export default function GreetingPage() {
             </button>
           )}
 
+          {/* Showing all indicator */}
+          {phase === 'showing-all' && (
+            <p className="text-amber-200 text-lg font-medium animate-fade-in">
+              Đang mở tất cả bao lì xì... 🎊
+            </p>
+          )}
+
           {/* Lucky message */}
           <div className="mt-6 flex justify-center gap-4 text-2xl">
             {['🎊', '🧧', '🎆', '🧨', '🎊'].map((emoji, i) => (
@@ -295,7 +319,7 @@ export default function GreetingPage() {
           </div>
 
           {/* Footer text */}
-          <p className="mt-4 text-amber-600 text-sm">
+          <p className="mt-4 text-amber-300 text-sm">
             Chúc bạn và gia đình năm mới An Khang Thịnh Vượng! 🎉
           </p>
         </footer>

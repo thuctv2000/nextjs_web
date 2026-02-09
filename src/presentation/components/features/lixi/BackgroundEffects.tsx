@@ -101,18 +101,11 @@ export function BackgroundEffects() {
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-amber-50 via-orange-50 to-red-50" />
-
-      {/* Radial light rays */}
-      <div className="absolute inset-0 opacity-30">
-        <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full"
-          style={{
-            background: 'radial-gradient(ellipse at top, rgba(255,215,0,0.3) 0%, transparent 70%)',
-          }}
-        />
-      </div>
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/background.png)' }}
+      />
 
       {/* Floating lanterns */}
       {mounted && lanterns.map((lantern) => {

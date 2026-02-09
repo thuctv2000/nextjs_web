@@ -9,6 +9,8 @@ interface GreetingCardEnvelopeProps {
   isDisabled: boolean;
   onOpen: (id: number) => void;
   delay?: number;
+  amount?: string;
+  isRevealed?: boolean;
 }
 
 export function GreetingCardEnvelope({
@@ -17,6 +19,8 @@ export function GreetingCardEnvelope({
   isDisabled,
   onOpen,
   delay = 0,
+  amount,
+  isRevealed = false,
 }: GreetingCardEnvelopeProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -214,6 +218,18 @@ export function GreetingCardEnvelope({
             />
           </div>
         </div>
+
+        {/* Revealed amount overlay */}
+        {isRevealed && amount && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center rounded-lg bg-black/50 backdrop-blur-sm animate-fade-in">
+            <span
+              className="text-amber-300 font-bold text-sm sm:text-base md:text-lg text-center px-2 drop-shadow-lg"
+              style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+            >
+              {amount}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -9,18 +9,18 @@ import { getActiveLixiConfig, LixiEnvelope } from '@/lib/api';
 
 // Fallback rewards when API is unavailable
 const FALLBACK_REWARDS: LixiEnvelope[] = [
-  { id: 1, amount: '100K VNĐ', message: 'Phát Tài Phát Lộc!' },
-  { id: 2, amount: '50K VNĐ', message: 'An Khang Thịnh Vượng!' },
-  { id: 3, amount: '200K VNĐ', message: 'Vạn Sự Như Ý!' },
-  { id: 4, amount: '20K VNĐ', message: 'Năm Mới Bình An!' },
-  { id: 5, amount: '500K VNĐ', message: 'Đại Cát Đại Lợi!' },
-  { id: 6, amount: '10K VNĐ', message: 'Tấn Tài Tấn Lộc!' },
-  { id: 7, amount: '1 Triệu VNĐ', message: 'Phúc Lộc Thọ!' },
-  { id: 8, amount: '30K VNĐ', message: 'Mã Đáo Thành Công!' },
-  { id: 9, amount: '88K VNĐ', message: 'Cung Hỷ Phát Tài!' },
-  { id: 10, amount: '168K VNĐ', message: 'Lộc Vào Như Nước!' },
-  { id: 11, amount: '66K VNĐ', message: 'Vui Vẻ Hạnh Phúc!' },
-  { id: 12, amount: '888K VNĐ', message: 'Tài Lộc Đầy Nhà!' },
+  { id: 1, amount: '100K VNĐ', message: 'Phát Tài Phát Lộc!', rate: 0.08 },
+  { id: 2, amount: '50K VNĐ', message: 'An Khang Thịnh Vượng!', rate: 0.15 },
+  { id: 3, amount: '200K VNĐ', message: 'Vạn Sự Như Ý!', rate: 0.03 },
+  { id: 4, amount: '20K VNĐ', message: 'Năm Mới Bình An!', rate: 0.25 },
+  { id: 5, amount: '500K VNĐ', message: 'Đại Cát Đại Lợi!', rate: 0.02 },
+  { id: 6, amount: '10K VNĐ', message: 'Tấn Tài Tấn Lộc!', rate: 0.30 },
+  { id: 7, amount: '1 Triệu VNĐ', message: 'Phúc Lộc Thọ!', rate: 0.005 },
+  { id: 8, amount: '30K VNĐ', message: 'Mã Đáo Thành Công!', rate: 0.005 },
+  { id: 9, amount: '88K VNĐ', message: 'Cung Hỷ Phát Tài!', rate: 0.10 },
+  { id: 10, amount: '168K VNĐ', message: 'Lộc Vào Như Nước!', rate: 0.05 },
+  { id: 11, amount: '66K VNĐ', message: 'Vui Vẻ Hạnh Phúc!', rate: 0.005 },
+  { id: 12, amount: '888K VNĐ', message: 'Tài Lộc Đầy Nhà!', rate: 0.01 },
 ];
 
 export default function LixiPage() {

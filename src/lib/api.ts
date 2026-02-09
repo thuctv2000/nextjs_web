@@ -4,6 +4,7 @@ export interface LixiEnvelope {
   id: number;
   amount: string;
   message: string;
+  rate: number;
 }
 
 export interface LixiConfig {
