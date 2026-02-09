@@ -22,6 +22,8 @@ declare global {
         elementId: string,
         options: {
           videoId: string;
+          height?: string;
+          width?: string;
           playerVars?: Record<string, number | string>;
           events?: {
             onReady?: (event: { target: YTPlayer }) => void;
@@ -44,7 +46,6 @@ export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const playerRef = useRef<YTPlayer | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const toggleMusic = useCallback(() => {
     if (!playerRef.current) return;
@@ -64,10 +65,13 @@ export function MusicPlayer() {
     let mounted = true;
 
     function createPlayer() {
-      if (!mounted || !window.YT) return;
+      if (!mounted || !window.YT?.Player) return;
+      if (playerRef.current) return;
 
       playerRef.current = new window.YT.Player('yt-music-player', {
         videoId: YOUTUBE_VIDEO_ID,
+        height: '1',
+        width: '1',
         playerVars: {
           autoplay: 0,
           loop: 1,
@@ -77,9 +81,7 @@ export function MusicPlayer() {
           fs: 0,
           modestbranding: 1,
           rel: 0,
-          showinfo: 0,
           iv_load_policy: 3,
-          origin: window.location.origin,
         },
         events: {
           onReady: (event) => {
@@ -90,7 +92,6 @@ export function MusicPlayer() {
           onStateChange: (event) => {
             if (!mounted) return;
             if (event.data === window.YT.PlayerState.ENDED) {
-              // Loop: replay
               playerRef.current?.playVideo();
             }
             setIsPlaying(
@@ -104,10 +105,11 @@ export function MusicPlayer() {
       });
     }
 
-    // Load YT IFrame API if not loaded
-    if (window.YT && window.YT.Player) {
+    // Load YT IFrame API
+    if (window.YT?.Player) {
       createPlayer();
     } else {
+      // Add script if not already present
       const existingScript = document.querySelector(
         'script[src="https://www.youtube.com/iframe_api"]'
       );
@@ -116,7 +118,28 @@ export function MusicPlayer() {
         tag.src = 'https://www.youtube.com/iframe_api';
         document.head.appendChild(tag);
       }
-      window.onYouTubeIframeAPIReady = createPlayer;
+
+      // Use both callback and polling to handle race conditions
+      const prevCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        prevCallback?.();
+        createPlayer();
+      };
+
+      // Polling fallback in case callback was already fired
+      const pollInterval = setInterval(() => {
+        if (window.YT?.Player) {
+          clearInterval(pollInterval);
+          createPlayer();
+        }
+      }, 200);
+
+      return () => {
+        mounted = false;
+        clearInterval(pollInterval);
+        playerRef.current?.destroy();
+        playerRef.current = null;
+      };
     }
 
     return () => {
@@ -128,8 +151,11 @@ export function MusicPlayer() {
 
   return (
     <>
-      {/* Hidden YouTube player */}
-      <div className="fixed -left-[9999px] -top-[9999px] w-0 h-0 overflow-hidden pointer-events-none" ref={containerRef}>
+      {/* YouTube player - visually hidden but in DOM with real dimensions */}
+      <div
+        className="fixed bottom-0 right-0 pointer-events-none"
+        style={{ opacity: 0, width: '1px', height: '1px', overflow: 'hidden' }}
+      >
         <div id="yt-music-player" />
       </div>
 
