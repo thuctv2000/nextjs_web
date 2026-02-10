@@ -73,7 +73,7 @@ export default function LixiPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-amber-50 to-red-100">
+      <div className="min-h-dvh flex items-center justify-center bg-gradient-to-br from-red-100 via-amber-50 to-red-100">
         <div className="text-center">
           <div className="animate-bounce text-6xl mb-4">🧧</div>
           <p className="text-amber-700 font-medium">Đang tải...</p>
@@ -83,12 +83,12 @@ export default function LixiPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-dvh overflow-x-hidden">
       {/* Background effects */}
       <BackgroundEffects />
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 min-h-dvh flex flex-col">
         {/* Header section */}
         <header className="pt-8 pb-4 text-center">
           {/* Decorative top element */}
