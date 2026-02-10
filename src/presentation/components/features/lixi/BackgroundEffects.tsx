@@ -100,7 +100,7 @@ export function BackgroundEffects() {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" style={{ height: '100dvh' }}>
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"

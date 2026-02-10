@@ -112,12 +112,12 @@ export default function GreetingPage() {
   }, []);
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden">
+    <div className="relative h-dvh overflow-hidden">
       {/* Background effects */}
       <BackgroundEffects />
 
       {/* Main content */}
-      <div className="relative z-10 min-h-dvh flex flex-col">
+      <div className="relative z-10 h-dvh flex flex-col overflow-y-auto">
         {/* Header section */}
         <header className="pt-8 pb-4 text-center">
           {/* Decorative top element */}
@@ -196,7 +196,7 @@ export default function GreetingPage() {
 
         {/* Greeting Dialog Overlay */}
         {phase === 'revealed' && selectedEnvelope && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" style={{ height: '100dvh' }}>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div
               className="relative w-full max-w-2xl animate-card-unfold"
               style={{ aspectRatio: '1152 / 928' }}
