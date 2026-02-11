@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="350" viewBox="0 0 300 350" fill="none">
+  <!-- Hat cone -->
+  <polygon points="150,10 40,320 260,320" fill="#e63946" stroke="#d62828" stroke-width="3"/>
+  <!-- Stripes -->
+  <polygon points="150,10 95,165 205,165" fill="#f4a261"/>
+  <polygon points="108,130 70,250 230,250 192,130" fill="#e63946"/>
+  <!-- Pom pom -->
+  <circle cx="150" cy="15" r="18" fill="#f4a261"/>
+  <!-- Brim -->
+  <ellipse cx="150" cy="320" rx="130" ry="20" fill="#2a9d8f"/>
+  <!-- Dots -->
+  <circle cx="100" cy="200" r="8" fill="#f4a261"/>
+  <circle cx="200" cy="200" r="8" fill="#f4a261"/>
+  <circle cx="150" cy="260" r="8" fill="#f4a261"/>
+  <circle cx="120" cy="280" r="6" fill="#264653"/>
+  <circle cx="180" cy="280" r="6" fill="#264653"/>
+</svg>

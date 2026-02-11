@@ -1,0 +1,119 @@
+'use client';
+
+import { useEffect, useRef, useState, useCallback } from 'react';
+import {
+  FilesetResolver,
+  FaceLandmarker,
+  type FaceLandmarkerResult,
+} from '@mediapipe/tasks-vision';
+
+const WASM_CDN =
+  'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm';
+const MODEL_URL =
+  'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+
+interface UseFaceLandmarkerReturn {
+  isLoading: boolean;
+  hasError: boolean;
+  errorMessage: string;
+  faceLandmarkerRef: React.RefObject<FaceLandmarker | null>;
+  detect: (video: HTMLVideoElement, timestamp: number) => FaceLandmarkerResult | null;
+}
+
+export function useFaceLandmarker(): UseFaceLandmarkerReturn {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function init(): Promise<void> {
+      try {
+        const vision = await FilesetResolver.forVisionTasks(WASM_CDN);
+
+        try {
+          // Try GPU first
+          const landmarker = await FaceLandmarker.createFromOptions(vision, {
+            baseOptions: {
+              modelAssetPath: MODEL_URL,
+              delegate: 'GPU',
+            },
+            runningMode: 'VIDEO',
+            numFaces: 1,
+            outputFaceBlendshapes: false,
+            outputFacialTransformationMatrixes: false,
+          });
+          if (!cancelled) {
+            faceLandmarkerRef.current = landmarker;
+            setIsLoading(false);
+          }
+        } catch {
+          // Fallback to CPU
+          try {
+            const landmarker = await FaceLandmarker.createFromOptions(vision, {
+              baseOptions: {
+                modelAssetPath: MODEL_URL,
+                delegate: 'CPU',
+              },
+              runningMode: 'VIDEO',
+              numFaces: 1,
+              outputFaceBlendshapes: false,
+              outputFacialTransformationMatrixes: false,
+            });
+            if (!cancelled) {
+              faceLandmarkerRef.current = landmarker;
+              setIsLoading(false);
+            }
+          } catch (cpuErr) {
+            if (!cancelled) {
+              setHasError(true);
+              setErrorMessage(
+                cpuErr instanceof Error
+                  ? cpuErr.message
+                  : 'Không thể khởi tạo face detection',
+              );
+              setIsLoading(false);
+            }
+          }
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setHasError(true);
+          setErrorMessage(
+            err instanceof Error
+              ? err.message
+              : 'Không thể tải WASM module',
+          );
+          setIsLoading(false);
+        }
+      }
+    }
+
+    init();
+
+    return () => {
+      cancelled = true;
+      if (faceLandmarkerRef.current) {
+        faceLandmarkerRef.current.close();
+      }
+    };
+  }, []);
+
+  const detect = useCallback(
+    (video: HTMLVideoElement, timestamp: number): FaceLandmarkerResult | null => {
+      if (!faceLandmarkerRef.current) return null;
+      return faceLandmarkerRef.current.detectForVideo(video, timestamp);
+    },
+    [],
+  );
+
+  return {
+    isLoading,
+    hasError,
+    errorMessage,
+    faceLandmarkerRef,
+    detect,
+  };
+}

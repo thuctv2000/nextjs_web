@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="200" viewBox="0 0 500 200" fill="none">
+  <!-- Vine base -->
+  <path d="M20,140 Q125,100 250,120 Q375,140 480,100" stroke="#2d6a4f" stroke-width="8" fill="none"/>
+  <!-- Leaves -->
+  <ellipse cx="100" cy="130" rx="15" ry="8" fill="#52b788" transform="rotate(-20,100,130)"/>
+  <ellipse cx="250" cy="120" rx="15" ry="8" fill="#52b788" transform="rotate(10,250,120)"/>
+  <ellipse cx="400" cy="115" rx="15" ry="8" fill="#52b788" transform="rotate(-10,400,115)"/>
+  <!-- Flower 1 - pink -->
+  <circle cx="60" cy="100" r="18" fill="#f8a4b8"/>
+  <circle cx="42" cy="90" r="14" fill="#f48fb1"/>
+  <circle cx="78" cy="90" r="14" fill="#f48fb1"/>
+  <circle cx="50" cy="75" r="14" fill="#f48fb1"/>
+  <circle cx="70" cy="75" r="14" fill="#f48fb1"/>
+  <circle cx="60" cy="85" r="10" fill="#ffd54f"/>
+  <!-- Flower 2 - red -->
+  <circle cx="180" cy="85" r="18" fill="#ef5350"/>
+  <circle cx="162" cy="75" r="14" fill="#e53935"/>
+  <circle cx="198" cy="75" r="14" fill="#e53935"/>
+  <circle cx="170" cy="60" r="14" fill="#e53935"/>
+  <circle cx="190" cy="60" r="14" fill="#e53935"/>
+  <circle cx="180" cy="70" r="10" fill="#ffd54f"/>
+  <!-- Flower 3 - yellow -->
+  <circle cx="310" cy="95" r="18" fill="#fff176"/>
+  <circle cx="292" cy="85" r="14" fill="#ffee58"/>
+  <circle cx="328" cy="85" r="14" fill="#ffee58"/>
+  <circle cx="300" cy="70" r="14" fill="#ffee58"/>
+  <circle cx="320" cy="70" r="14" fill="#ffee58"/>
+  <circle cx="310" cy="80" r="10" fill="#ff8a65"/>
+  <!-- Flower 4 - purple -->
+  <circle cx="440" cy="75" r="18" fill="#ce93d8"/>
+  <circle cx="422" cy="65" r="14" fill="#ba68c8"/>
+  <circle cx="458" cy="65" r="14" fill="#ba68c8"/>
+  <circle cx="430" cy="50" r="14" fill="#ba68c8"/>
+  <circle cx="450" cy="50" r="14" fill="#ba68c8"/>
+  <circle cx="440" cy="60" r="10" fill="#ffd54f"/>
+</svg>

@@ -1,24 +1,25 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { GreetingCardEnvelope } from '@/presentation/components/features/lixi/GreetingCardEnvelope';
 import { BackgroundEffects } from '@/presentation/components/features/lixi/BackgroundEffects';
 import { cn } from '@/shared/utils/cn';
 import { getActiveLixiConfig, LixiEnvelope } from '@/lib/api';
 
 const FALLBACK_TIERS: LixiEnvelope[] = [
-  { id: 1, amount: '10K VNĐ', message: 'Năm Mới Bình An!', rate: 0.30 },
-  { id: 2, amount: '20K VNĐ', message: 'Tấn Tài Tấn Lộc!', rate: 0.25 },
-  { id: 3, amount: '50K VNĐ', message: 'An Khang Thịnh Vượng!', rate: 0.15 },
-  { id: 4, amount: '88K VNĐ', message: 'Cung Hỷ Phát Tài!', rate: 0.10 },
-  { id: 5, amount: '100K VNĐ', message: 'Phát Tài Phát Lộc!', rate: 0.08 },
-  { id: 6, amount: '168K VNĐ', message: 'Lộc Vào Như Nước!', rate: 0.05 },
-  { id: 7, amount: '200K VNĐ', message: 'Vạn Sự Như Ý!', rate: 0.03 },
-  { id: 8, amount: '500K VNĐ', message: 'Đại Cát Đại Lợi!', rate: 0.02 },
-  { id: 9, amount: '888K VNĐ', message: 'Tài Lộc Đầy Nhà!', rate: 0.01 },
-  { id: 10, amount: '1 Triệu VNĐ', message: 'Phúc Lộc Thọ!', rate: 0.005 },
-  { id: 11, amount: '66K VNĐ', message: 'Vui Vẻ Hạnh Phúc!', rate: 0.005 },
-  { id: 12, amount: '30K VNĐ', message: 'Mã Đáo Thành Công!', rate: 0.005 },
+  { id: 1, amount: '10.000', message: 'Năm Mới Bình An!', rate: 0.30 },
+  { id: 2, amount: '20.000', message: 'Tấn Tài Tấn Lộc!', rate: 0.25 },
+  { id: 3, amount: '50.000', message: 'An Khang Thịnh Vượng!', rate: 0.15 },
+  { id: 4, amount: '88.000', message: 'Cung Hỷ Phát Tài!', rate: 0.10 },
+  { id: 5, amount: '100.000', message: 'Phát Tài Phát Lộc!', rate: 0.08 },
+  { id: 6, amount: '168.000', message: 'Lộc Vào Như Nước!', rate: 0.05 },
+  { id: 7, amount: '200.000', message: 'Vạn Sự Như Ý!', rate: 0.03 },
+  { id: 8, amount: '500.000', message: 'Đại Cát Đại Lợi!', rate: 0.02 },
+  { id: 9, amount: '888.000', message: 'Tài Lộc Đầy Nhà!', rate: 0.01 },
+  { id: 10, amount: '1.000.000', message: 'Phúc Lộc Thọ!', rate: 0.005 },
+  { id: 11, amount: '66.000', message: 'Vui Vẻ Hạnh Phúc!', rate: 0.005 },
+  { id: 12, amount: '30.000', message: 'Mã Đáo Thành Công!', rate: 0.005 },
 ];
 
 interface EnvelopeSlot {
@@ -121,59 +122,27 @@ export default function GreetingPage() {
         {/* Header section */}
         <header className="pt-8 pb-4 text-center">
           {/* Decorative top element */}
-          <div className="flex justify-center mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-3xl animate-bounce-slow">🏮</span>
-              <span className="text-3xl animate-bounce-slow" style={{ animationDelay: '0.2s' }}>
-                🧧
-              </span>
-              <span className="text-3xl animate-bounce-slow" style={{ animationDelay: '0.4s' }}>
-                🏮
-              </span>
-            </div>
-          </div>
-
-          {/* Main title */}
-          <h1
-            className={cn(
-              'text-4xl sm:text-5xl md:text-6xl font-bold',
-              'bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300',
-              'bg-clip-text text-transparent',
-              'drop-shadow-lg',
-              'animate-text-shimmer bg-[length:200%_auto]'
-            )}
-          >
-            Thiệp Chúc Tết May Mắn
-          </h1>
 
           {/* Subtitle */}
           <p className="mt-3 text-lg sm:text-xl text-amber-200 font-medium">
             Chọn một bao lì xì để mở thiệp chúc Tết! 🎊
           </p>
 
-          {/* Year display */}
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-amber-900/40 rounded-full border border-amber-400/50">
-            <span className="text-amber-300 font-bold">🐍 Năm Ất Tỵ 2025</span>
-          </div>
-
-          {/* Mode switcher */}
-          <div className="mt-6 flex justify-center">
-            <a
-              href="/lixi"
-              className={cn(
-                'inline-flex items-center gap-2 px-4 py-2',
-                'bg-amber-900/40 backdrop-blur-sm rounded-full',
-                'border-2 border-amber-400/50',
-                'text-amber-200 font-medium text-sm',
-                'hover:bg-amber-900/60 hover:border-amber-300',
-                'transition-all duration-300',
-                'shadow-md hover:shadow-lg'
-              )}
-            >
-              <span>🧧</span>
-              <span>Xem phiên bản Lì Xì thông thường</span>
-            </a>
-          </div>
+          <Link
+            href="/face-filter"
+            className={cn(
+              'mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full',
+              'bg-gradient-to-r from-amber-400 to-amber-500',
+              'text-red-900 font-semibold text-sm',
+              'shadow-lg shadow-amber-500/30',
+              'hover:from-amber-500 hover:to-amber-600',
+              'hover:-translate-y-0.5',
+              'active:scale-95',
+              'transition-all duration-200'
+            )}
+          >
+            📸 Face Filter Tết
+          </Link>
         </header>
 
         {/* Envelopes grid */}
@@ -196,9 +165,9 @@ export default function GreetingPage() {
 
         {/* Greeting Dialog Overlay */}
         {phase === 'revealed' && selectedEnvelope && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div
-              className="relative w-full max-w-2xl animate-card-unfold"
+              className="relative w-full max-w-[85vw] sm:max-w-md md:max-w-2xl animate-card-unfold"
               style={{ aspectRatio: '1152 / 928' }}
             >
               {/* Background image */}
@@ -210,7 +179,7 @@ export default function GreetingPage() {
               {/* Close button - top right of white box */}
               <button
                 onClick={handleCloseDialog}
-                className="absolute top-[21%] right-[25%] w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm sm:text-base z-10 transition-colors"
+                className="absolute top-[22%] right-[24%] w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm sm:text-base z-10 transition-colors"
               >
                 ✕
               </button>
@@ -218,9 +187,9 @@ export default function GreetingPage() {
               {/* Text overlay */}
               <div className="absolute inset-0">
                 {/* White box: title + message */}
-                <div className="absolute top-[33%] bottom-[44%] left-[28%] right-[28%] flex flex-col items-center justify-center gap-2 sm:gap-4 px-4">
+                <div className="absolute top-[33%] bottom-[44%] left-[28%] right-[28%] flex flex-col items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 overflow-hidden">
                   <h2
-                    className="text-xs tracking-wide text-center font-bold italic"
+                    className="text-[10px] sm:text-xs tracking-wide text-center font-bold italic shrink-0"
                     style={{
                       fontFamily: 'var(--font-playfair), Georgia, serif',
                       color: '#b91c1c',
@@ -230,7 +199,7 @@ export default function GreetingPage() {
                     CHÚC MỪNG NĂM MỚI
                   </h2>
                   <p
-                    className="text-center text-sm sm:text-base md:text-lg text-red-800 leading-relaxed font-bold"
+                    className="text-center text-xs sm:text-sm md:text-lg text-red-800 leading-tight sm:leading-relaxed font-bold"
                     style={{
                       fontFamily: 'var(--font-dancing), cursive',
                     }}
@@ -242,7 +211,7 @@ export default function GreetingPage() {
                 {/* Red dragon section: amount */}
                 <div className="absolute top-[59%] left-[28%] right-[28%] flex items-center justify-center">
                   <p
-                    className="font-bold text-base sm:text-base md:text-lg lg:text-xl tracking-wide"
+                    className="font-bold text-[10px] sm:text-base md:text-lg lg:text-xl tracking-wide"
                     style={{
                       fontFamily: 'var(--font-playfair), Georgia, serif',
                       fontStyle: 'italic',
@@ -260,7 +229,7 @@ export default function GreetingPage() {
                   className="absolute top-[69%] left-[35%] right-[33%] flex items-center justify-center cursor-pointer hover:brightness-125 transition-all"
                 >
                  <p
-                    className="font-bold text-[7px] sm:text-[9px] md:text-[9px] tracking-wide"
+                    className="font-bold text-[5px] sm:text-[8px] md:text-[9px] tracking-wide"
                     style={{
                       fontFamily: 'var(--font-playfair), Georgia, serif',
                       color: '#E8B169',
@@ -304,19 +273,6 @@ export default function GreetingPage() {
               Đang mở tất cả bao lì xì... 🎊
             </p>
           )}
-
-          {/* Lucky message */}
-          <div className="mt-6 flex justify-center gap-4 text-2xl">
-            {['🎊', '🧧', '🎆', '🧨', '🎊'].map((emoji, i) => (
-              <span
-                key={i}
-                className="animate-float"
-                style={{ animationDelay: `${i * 0.2}s` }}
-              >
-                {emoji}
-              </span>
-            ))}
-          </div>
 
           {/* Footer text */}
           <p className="mt-4 text-amber-300 text-sm">
