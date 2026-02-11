@@ -16,22 +16,33 @@ export function FaceFilter(): React.ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
   const filterImagesRef = useRef<Map<string, HTMLImageElement>>(new Map());
+  const frameImageRef = useRef<HTMLImageElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
   const { isLoading, hasError, errorMessage, detect } = useFaceLandmarker();
   const [selectedFilterId, setSelectedFilterId] = useState<string | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [cameraError, setCameraError] = useState('');
 
-  // Preload filter images
+  // Preload filter images + Tet frame
   useEffect(() => {
     preloadFilterImages(FILTERS).then((map) => {
       filterImagesRef.current = map;
     });
+    const frameImg = new Image();
+    frameImg.onload = () => { frameImageRef.current = frameImg; };
+    frameImg.src = '/filters/tet-frame.png';
   }, []);
 
   // Start camera
   useEffect(() => {
     async function startCamera(): Promise<void> {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraError(
+          'Trình duyệt không hỗ trợ camera. Vui lòng truy cập qua HTTPS.',
+        );
+        return;
+      }
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
@@ -43,8 +54,10 @@ export function FaceFilter(): React.ReactElement {
           await videoRef.current.play();
           setIsCameraReady(true);
         }
-      } catch {
-        // Camera permission denied handled by loading state
+      } catch (err) {
+        setCameraError(
+          err instanceof Error ? err.message : 'Không thể truy cập camera',
+        );
       }
     }
 
@@ -69,8 +82,14 @@ export function FaceFilter(): React.ReactElement {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
+      // Skip frame if video not ready yet (common on mobile)
+      if (!video.videoWidth || !video.videoHeight) {
+        animFrameRef.current = requestAnimationFrame(renderFrame);
+        return;
+      }
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -82,6 +101,24 @@ export function FaceFilter(): React.ReactElement {
         if (filter && image) {
           drawFilter(ctx, result.faceLandmarks[0], filter, image, canvas.width, canvas.height);
         }
+      }
+
+      // Draw Tet frame overlay (scaled so the rectangular border aligns with canvas edges)
+      // The frame image (500x500) has its border inset: ~10% left, ~14% top, ~8% right, ~10% bottom
+      if (frameImageRef.current) {
+        const borderLeft = 0.10;
+        const borderTop = 0.14;
+        const borderW = 0.82; // borderRight(0.92) - borderLeft(0.10)
+        const borderH = 0.76; // borderBottom(0.90) - borderTop(0.14)
+        const fw = canvas.width / borderW;
+        const fh = canvas.height / borderH;
+        const fx = -borderLeft * fw;
+        const fy = -borderTop * fh;
+
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(frameImageRef.current, -fx - fw, fy, fw, fh);
+        ctx.restore();
       }
 
       animFrameRef.current = requestAnimationFrame(renderFrame);
@@ -117,11 +154,11 @@ export function FaceFilter(): React.ReactElement {
     );
   }
 
-  if (hasError) {
+  if (hasError || cameraError) {
     return (
       <div className="h-dvh flex flex-col items-center justify-center bg-gradient-to-b from-red-900 to-red-950 text-white p-6">
         <p className="text-2xl mb-2">😞</p>
-        <p className="text-center text-amber-200">{errorMessage}</p>
+        <p className="text-center text-amber-200">{errorMessage || cameraError}</p>
         <Link
           href="/lixi/greeting"
           className="mt-6 px-6 py-3 bg-amber-500 text-red-900 font-bold rounded-full"

@@ -19,8 +19,8 @@ function makeLandmarks(overrides: Record<number, { x: number; y: number; z: numb
 }
 
 describe('FILTERS', () => {
-  it('has 5 filter entries', () => {
-    expect(FILTERS).toHaveLength(5);
+  it('has 6 filter entries', () => {
+    expect(FILTERS).toHaveLength(6);
   });
 
   it('each filter has required fields', () => {
@@ -30,6 +30,7 @@ describe('FILTERS', () => {
       expect(f).toHaveProperty('icon');
       expect(f).toHaveProperty('imageSrc');
       expect(f).toHaveProperty('anchor');
+      expect(f).toHaveProperty('offsetX');
       expect(f).toHaveProperty('offsetY');
       expect(f).toHaveProperty('scaleMultiplier');
     }
@@ -41,7 +42,7 @@ describe('FILTERS', () => {
   });
 
   it('each filter anchor is a valid type', () => {
-    const validAnchors = ['eyes', 'forehead', 'nose', 'mouth'];
+    const validAnchors = ['eyes', 'forehead', 'nose', 'mouth', 'face-center'];
     for (const f of FILTERS) {
       expect(validAnchors).toContain(f.anchor);
     }
@@ -88,6 +89,16 @@ describe('getAnchorPosition', () => {
     const pos = getAnchorPosition(landmarks, 'mouth', canvasW, canvasH);
     expect(pos.x).toBeCloseTo(0.5 * canvasW);
     expect(pos.y).toBeCloseTo(0.7 * canvasH);
+  });
+
+  it('returns midpoint of forehead and chin for "face-center" anchor', () => {
+    const landmarks = makeLandmarks({
+      10: { x: 0.5, y: 0.2, z: 0 },   // forehead
+      152: { x: 0.5, y: 0.8, z: 0 },  // chin
+    });
+    const pos = getAnchorPosition(landmarks, 'face-center', canvasW, canvasH);
+    expect(pos.x).toBeCloseTo(0.5 * canvasW);
+    expect(pos.y).toBeCloseTo(0.5 * canvasH);
   });
 });
 
@@ -158,6 +169,7 @@ describe('drawFilter', () => {
     icon: '🎭',
     imageSrc: '/test.png',
     anchor: 'eyes',
+    offsetX: 0,
     offsetY: 0,
     scaleMultiplier: 1.5,
   };
@@ -203,8 +215,8 @@ describe('drawFilter', () => {
 describe('preloadFilterImages', () => {
   it('returns a Map with keys matching filter ids', async () => {
     const filters: FaceFilterDefinition[] = [
-      { id: 'a', name: 'A', icon: '🅰️', imageSrc: '/a.png', anchor: 'eyes', offsetY: 0, scaleMultiplier: 1 },
-      { id: 'b', name: 'B', icon: '🅱️', imageSrc: '/b.png', anchor: 'nose', offsetY: 0, scaleMultiplier: 1 },
+      { id: 'a', name: 'A', icon: '🅰️', imageSrc: '/a.png', anchor: 'eyes', offsetX: 0, offsetY: 0, scaleMultiplier: 1 },
+      { id: 'b', name: 'B', icon: '🅱️', imageSrc: '/b.png', anchor: 'nose', offsetX: 0, offsetY: 0, scaleMultiplier: 1 },
     ];
     const map = await preloadFilterImages(filters);
     expect(map.has('a')).toBe(true);
@@ -214,7 +226,7 @@ describe('preloadFilterImages', () => {
 
   it('each value is an HTMLImageElement with correct src', async () => {
     const filters: FaceFilterDefinition[] = [
-      { id: 'c', name: 'C', icon: '©️', imageSrc: '/c.png', anchor: 'forehead', offsetY: 0, scaleMultiplier: 1 },
+      { id: 'c', name: 'C', icon: '©️', imageSrc: '/c.png', anchor: 'forehead', offsetX: 0, offsetY: 0, scaleMultiplier: 1 },
     ];
     const map = await preloadFilterImages(filters);
     const img = map.get('c');

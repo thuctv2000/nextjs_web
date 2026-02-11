@@ -104,7 +104,12 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
   const detect = useCallback(
     (video: HTMLVideoElement, timestamp: number): FaceLandmarkerResult | null => {
       if (!faceLandmarkerRef.current) return null;
-      return faceLandmarkerRef.current.detectForVideo(video, timestamp);
+      if (video.readyState < 2) return null;
+      try {
+        return faceLandmarkerRef.current.detectForVideo(video, timestamp);
+      } catch {
+        return null;
+      }
     },
     [],
   );
