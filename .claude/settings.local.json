@@ -9,7 +9,9 @@
       "Bash(npx tsc:*)",
       "Bash(source ~/.nvm/nvm.sh)",
       "Bash(nvm use:*)",
-      "Bash(sips:*)"
+      "Bash(sips:*)",
+      "Bash(ipconfig getifaddr:*)",
+      "Bash(ipconfig:*)"
     ]
   }
 }

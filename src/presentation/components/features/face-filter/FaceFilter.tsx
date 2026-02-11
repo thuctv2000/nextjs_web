@@ -49,10 +49,12 @@ export function FaceFilter(): React.ReactElement {
           audio: false,
         });
         streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play();
-          setIsCameraReady(true);
+        const video = videoRef.current;
+        if (video) {
+          video.srcObject = stream;
+          // Wait for video to have actual frame data before marking ready
+          video.onloadeddata = () => setIsCameraReady(true);
+          await video.play();
         }
       } catch (err) {
         setCameraError(
@@ -189,10 +191,10 @@ export function FaceFilter(): React.ReactElement {
       <main className="flex-1 relative flex items-center justify-center overflow-hidden bg-black">
         <video
           ref={videoRef}
+          autoPlay
           playsInline
           muted
-          className="absolute opacity-0 pointer-events-none"
-          style={{ width: 0, height: 0 }}
+          className="absolute w-1 h-1 opacity-0 pointer-events-none"
         />
         <canvas
           ref={canvasRef}
