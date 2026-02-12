@@ -54,7 +54,9 @@ export function FaceFilter(): React.ReactElement {
           video.srcObject = stream;
           // Wait for video to have actual frame data before marking ready
           video.onloadeddata = () => setIsCameraReady(true);
-          await video.play();
+          video.play().catch(() => {
+            // Ignored: play() interrupted because component unmounted
+          });
         }
       } catch (err) {
         setCameraError(
