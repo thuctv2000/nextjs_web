@@ -11,7 +11,11 @@
       "Bash(nvm use:*)",
       "Bash(sips:*)",
       "Bash(ipconfig getifaddr:*)",
-      "Bash(ipconfig:*)"
+      "Bash(ipconfig:*)",
+      "Bash(go build:*)",
+      "Bash(go vet:*)",
+      "Bash(pushd:*)",
+      "Bash(popd:*)"
     ]
   }
 }

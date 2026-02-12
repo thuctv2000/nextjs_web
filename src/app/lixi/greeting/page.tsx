@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { GreetingCardEnvelope } from '@/presentation/components/features/lixi/GreetingCardEnvelope';
 import { BackgroundEffects } from '@/presentation/components/features/lixi/BackgroundEffects';
 import { cn } from '@/shared/utils/cn';
-import { getActiveLixiConfig, LixiEnvelope } from '@/lib/api';
+import { getActiveLixiConfig, submitLixiGreeting, LixiEnvelope } from '@/lib/api';
 
 const FALLBACK_TIERS: LixiEnvelope[] = [
   { id: 1, amount: '10.000', message: 'Năm Mới Bình An!', rate: 0.30 },
@@ -27,7 +27,7 @@ interface EnvelopeSlot {
   message: string;
 }
 
-type Phase = 'picking' | 'revealed' | 'showing-all';
+type Phase = 'picking' | 'revealed' | 'previewing' | 'showing-all';
 
 function pickByRate(tiers: LixiEnvelope[]): LixiEnvelope {
   const totalWeight = tiers.reduce((sum, t) => sum + t.rate, 0);
@@ -58,7 +58,11 @@ export default function GreetingPage() {
   const [envelopes, setEnvelopes] = useState<EnvelopeSlot[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [phase, setPhase] = useState<Phase>('picking');
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [userName, setUserName] = useState('');
   const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Fetch config on mount
   useEffect(() => {
@@ -95,22 +99,75 @@ export default function GreetingPage() {
     setPhase('revealed');
   }, [phase]);
 
-  const handleReplay = useCallback(() => {
-    if (phase !== 'revealed') return;
+  const doReplay = useCallback(() => {
     setPhase('showing-all');
-
-    // After 3 seconds, auto-reset with new round
     resetTimerRef.current = setTimeout(() => {
       setEnvelopes(generateRound(tiers));
       setSelectedIndex(null);
       setPhase('picking');
     }, 3000);
-  }, [phase, tiers]);
+  }, [tiers]);
+
+  const handleReplay = useCallback(() => {
+    if (phase !== 'revealed') return;
+    doReplay();
+  }, [phase, doReplay]);
+
+  const handleNhanLiXi = useCallback(() => {
+    if (phase !== 'revealed') return;
+    fileInputRef.current?.click();
+  }, [phase]);
+
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedEnvelope) return;
+
+    const base64 = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    setPreviewImage(base64);
+    setPhase('previewing');
+    // Reset file input so same file can be selected again
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, [selectedEnvelope]);
+
+  const handlePreviewSubmit = useCallback(async () => {
+    if (!previewImage || !selectedEnvelope) return;
+
+    setIsUploading(true);
+    try {
+      await submitLixiGreeting({
+        name: userName,
+        amount: selectedEnvelope.amount,
+        message: selectedEnvelope.message,
+        image: previewImage,
+      });
+
+      setPreviewImage(null);
+      setUserName('');
+      doReplay();
+    } catch {
+      alert('Tải ảnh thất bại, vui lòng thử lại!');
+    } finally {
+      setIsUploading(false);
+    }
+  }, [previewImage, selectedEnvelope, userName, doReplay]);
+
+  const handlePreviewCancel = useCallback(() => {
+    setPreviewImage(null);
+    setUserName('');
+    setPhase('revealed');
+  }, []);
 
   const handleCloseDialog = useCallback(() => {
-    // Closing the dialog just closes the popup, keeps the revealed state
-    // User should click "Chơi Lại" to proceed
-  }, []);
+    setEnvelopes(generateRound(tiers));
+    setSelectedIndex(null);
+    setPhase('picking');
+  }, [tiers]);
 
   return (
     <div className="relative h-dvh overflow-hidden">
@@ -179,7 +236,7 @@ export default function GreetingPage() {
               {/* Close button - top right of white box */}
               <button
                 onClick={handleCloseDialog}
-                className="absolute top-[22%] right-[24%] w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm sm:text-base z-10 transition-colors"
+                className="absolute top-[10%] right-[18%] w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/80 text-gray-500 hover:bg-white hover:text-gray-800 text-sm sm:text-base z-10 transition-all shadow-md"
               >
                 ✕
               </button>
@@ -223,10 +280,18 @@ export default function GreetingPage() {
                   </p>
                 </div>
 
-                {/* Golden scroll bar: NHẬN LÌ XÌ NGAY */}
+                {/* Golden scroll bar: NHẬN LÌ XÌ */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
                 <button
-                  onClick={handleReplay}
-                  className="absolute top-[69%] left-[35%] right-[33%] flex items-center justify-center cursor-pointer hover:brightness-125 transition-all"
+                  onClick={handleNhanLiXi}
+                  disabled={isUploading}
+                  className="absolute top-[69%] left-[35%] right-[33%] flex items-center justify-center cursor-pointer hover:brightness-125 transition-all disabled:opacity-50 disabled:cursor-wait"
                 >
                  <p
                     className="font-bold text-[5px] sm:text-[8px] md:text-[9px] tracking-wide"
@@ -236,8 +301,66 @@ export default function GreetingPage() {
                       textShadow: '0 1px 2px rgba(0,0,0,0.2)',
                     }}
                   >
-                    NHẬN LÌ XÌ
+                    {isUploading ? 'ĐANG TẢI...' : 'NHẬN LÌ XÌ'}
                   </p>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Preview Overlay */}
+        {phase === 'previewing' && previewImage && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+            <div className="w-full max-w-sm bg-gradient-to-b from-red-900 to-red-950 rounded-2xl shadow-2xl border border-amber-500/30 overflow-hidden">
+              {/* Header */}
+              <div className="px-6 pt-6 pb-3 text-center">
+                <h3
+                  className="text-lg font-bold tracking-wide"
+                  style={{
+                    fontFamily: 'var(--font-playfair), Georgia, serif',
+                    color: '#E8B169',
+                  }}
+                >
+                  Xác nhận lì xì
+                </h3>
+              </div>
+
+              {/* Preview Image */}
+              <div className="px-6 flex justify-center">
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="max-h-48 rounded-lg object-contain border-2 border-amber-500/40"
+                />
+              </div>
+
+              {/* Name Input */}
+              <div className="px-6 pt-4">
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Nhập tên của bạn"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-amber-500/30 text-amber-100 placeholder-amber-300/50 text-center text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-colors"
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="px-6 pt-4 pb-6 flex gap-3">
+                <button
+                  onClick={handlePreviewCancel}
+                  disabled={isUploading}
+                  className="flex-1 px-4 py-3 rounded-lg border border-amber-500/30 text-amber-200 text-sm font-medium hover:bg-white/10 transition-colors disabled:opacity-50"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handlePreviewSubmit}
+                  disabled={isUploading || !userName.trim()}
+                  className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-red-900 text-sm font-bold shadow-lg hover:from-amber-400 hover:to-amber-500 transition-all disabled:opacity-50 disabled:cursor-wait"
+                >
+                  {isUploading ? 'Đang gửi...' : 'Gửi'}
                 </button>
               </div>
             </div>

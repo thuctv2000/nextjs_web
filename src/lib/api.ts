@@ -24,3 +24,14 @@ export async function getActiveLixiConfig(): Promise<LixiConfig> {
   }
   return res.json();
 }
+
+export async function submitLixiGreeting(data: { name: string; amount: string; message: string; image: string }): Promise<void> {
+  const res = await fetch(`${API_URL}/api/lixi/greeting`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    throw new Error('Failed to submit lixi greeting');
+  }
+}
