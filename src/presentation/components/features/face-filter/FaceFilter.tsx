@@ -36,11 +36,15 @@ export function FaceFilter(): React.ReactElement {
 
   // Start camera
   useEffect(() => {
+    let cancelled = false;
+
     async function startCamera(): Promise<void> {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError(
-          'Trình duyệt không hỗ trợ camera. Vui lòng truy cập qua HTTPS.',
-        );
+        if (!cancelled) {
+          setCameraError(
+            'Trình duyệt không hỗ trợ camera. Vui lòng truy cập qua HTTPS.',
+          );
+        }
         return;
       }
       try {
@@ -48,28 +52,46 @@ export function FaceFilter(): React.ReactElement {
           video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
           audio: false,
         });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
         streamRef.current = stream;
         const video = videoRef.current;
         if (video) {
           video.srcObject = stream;
-          // Wait for video to have actual frame data before marking ready
-          video.onloadeddata = () => setIsCameraReady(true);
-          video.play().catch(() => {
-            // Ignored: play() interrupted because component unmounted
+          // Use 'playing' event — fires when video actually renders frames (more reliable on mobile than 'loadeddata')
+          video.onplaying = () => {
+            if (!cancelled) setIsCameraReady(true);
+          };
+          video.play().catch((err) => {
+            // Only report real errors, ignore AbortError from unmount
+            if (!cancelled && err instanceof DOMException && err.name !== 'AbortError') {
+              setCameraError('Không thể phát video camera');
+            }
           });
         }
       } catch (err) {
-        setCameraError(
-          err instanceof Error ? err.message : 'Không thể truy cập camera',
-        );
+        if (!cancelled) {
+          setCameraError(
+            err instanceof Error ? err.message : 'Không thể truy cập camera',
+          );
+        }
       }
     }
 
     startCamera();
 
     return () => {
+      cancelled = true;
+      const video = videoRef.current;
+      if (video) {
+        video.onplaying = null;
+        video.srcObject = null;
+      }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
       }
     };
   }, []);
@@ -196,7 +218,8 @@ export function FaceFilter(): React.ReactElement {
           autoPlay
           playsInline
           muted
-          className="absolute w-1 h-1 opacity-0 pointer-events-none"
+          className="pointer-events-none"
+          style={{ position: 'fixed', top: '-9999px', left: '-9999px' }}
         />
         <canvas
           ref={canvasRef}
