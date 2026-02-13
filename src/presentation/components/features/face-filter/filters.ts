@@ -79,9 +79,9 @@ export const FILTERS: FaceFilterDefinition[] = [
     icon: '🐴',
     imageSrc: '/filters/horse_face.png',
     anchor: 'face-center',
-    offsetX: 0,
-    offsetY: 0.08,
-    scaleMultiplier: 2.2,
+    offsetX: 0.1,
+    offsetY: -0.1,
+    scaleMultiplier: 2.25,
     widthBasis: 'face',
   },
 ];

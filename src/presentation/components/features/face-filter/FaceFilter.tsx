@@ -152,22 +152,9 @@ export function FaceFilter(): React.ReactElement {
         }
       }
 
-      // Draw Tet frame overlay (scaled so the rectangular border aligns with canvas edges)
-      // The frame image (500x500) has its border inset: ~10% left, ~14% top, ~8% right, ~10% bottom
+      // Draw Tet frame overlay covering full canvas
       if (frameImageRef.current) {
-        const borderLeft = 0.10;
-        const borderTop = 0.14;
-        const borderW = 0.82; // borderRight(0.92) - borderLeft(0.10)
-        const borderH = 0.76; // borderBottom(0.90) - borderTop(0.14)
-        const fw = canvas.width / borderW;
-        const fh = canvas.height / borderH;
-        const fx = -borderLeft * fw;
-        const fy = -borderTop * fh;
-
-        ctx.save();
-        ctx.scale(-1, 1);
-        ctx.drawImage(frameImageRef.current, -fx - fw, fy, fw, fh);
-        ctx.restore();
+        ctx.drawImage(frameImageRef.current, 0, 0, canvas.width, canvas.height);
       }
 
       animFrameRef.current = requestAnimationFrame(renderFrame);
@@ -183,7 +170,18 @@ export function FaceFilter(): React.ReactElement {
   const handleCapture = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const dataUrl = canvas.toDataURL('image/png');
+
+    // Flip horizontally to match what user sees on screen (CSS scaleX(-1))
+    const tmp = document.createElement('canvas');
+    tmp.width = canvas.width;
+    tmp.height = canvas.height;
+    const tmpCtx = tmp.getContext('2d');
+    if (!tmpCtx) return;
+    tmpCtx.translate(tmp.width, 0);
+    tmpCtx.scale(-1, 1);
+    tmpCtx.drawImage(canvas, 0, 0);
+
+    const dataUrl = tmp.toDataURL('image/png');
     const link = document.createElement('a');
     link.download = 'face-filter-tet.png';
     link.href = dataUrl;
