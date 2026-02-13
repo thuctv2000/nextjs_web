@@ -31,10 +31,13 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
 
     async function init(): Promise<void> {
       try {
+        console.log('[FaceLandmarker] Loading WASM module...');
         const vision = await FilesetResolver.forVisionTasks(WASM_CDN);
+        console.log('[FaceLandmarker] WASM module loaded OK');
 
         try {
           // Try GPU first
+          console.log('[FaceLandmarker] Trying GPU delegate...');
           const landmarker = await FaceLandmarker.createFromOptions(vision, {
             baseOptions: {
               modelAssetPath: MODEL_URL,
@@ -46,11 +49,13 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
             outputFacialTransformationMatrixes: false,
           });
           if (!cancelled) {
+            console.log('[FaceLandmarker] GPU delegate OK');
             faceLandmarkerRef.current = landmarker;
             setIsLoading(false);
           }
-        } catch {
+        } catch (gpuErr) {
           // Fallback to CPU
+          console.warn('[FaceLandmarker] GPU failed, trying CPU...', gpuErr);
           try {
             const landmarker = await FaceLandmarker.createFromOptions(vision, {
               baseOptions: {
@@ -63,10 +68,12 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
               outputFacialTransformationMatrixes: false,
             });
             if (!cancelled) {
+              console.log('[FaceLandmarker] CPU delegate OK');
               faceLandmarkerRef.current = landmarker;
               setIsLoading(false);
             }
           } catch (cpuErr) {
+            console.error('[FaceLandmarker] CPU also failed:', cpuErr);
             if (!cancelled) {
               setHasError(true);
               setErrorMessage(
@@ -79,6 +86,7 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
           }
         }
       } catch (err) {
+        console.error('[FaceLandmarker] WASM load failed:', err);
         if (!cancelled) {
           setHasError(true);
           setErrorMessage(

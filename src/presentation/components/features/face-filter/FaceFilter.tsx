@@ -39,6 +39,7 @@ export function FaceFilter(): React.ReactElement {
     let cancelled = false;
 
     async function startCamera(): Promise<void> {
+      console.log('[Camera] Starting camera...');
       if (!navigator.mediaDevices?.getUserMedia) {
         if (!cancelled) {
           setCameraError(
@@ -56,12 +57,15 @@ export function FaceFilter(): React.ReactElement {
           stream.getTracks().forEach((t) => t.stop());
           return;
         }
+        console.log('[Camera] Got stream, tracks:', stream.getTracks().map(t => `${t.kind}:${t.readyState}`));
         streamRef.current = stream;
         const video = videoRef.current;
         if (video) {
           video.srcObject = stream;
+          console.log('[Camera] Set srcObject, waiting for playing event...');
           // Use 'playing' event — fires when video actually renders frames (more reliable on mobile than 'loadeddata')
           video.onplaying = () => {
+            console.log('[Camera] Video playing! videoWidth:', video.videoWidth, 'videoHeight:', video.videoHeight);
             if (!cancelled) setIsCameraReady(true);
           };
           video.play().catch((err) => {
@@ -72,6 +76,7 @@ export function FaceFilter(): React.ReactElement {
           });
         }
       } catch (err) {
+        console.error('[Camera] getUserMedia error:', err);
         if (!cancelled) {
           setCameraError(
             err instanceof Error ? err.message : 'Không thể truy cập camera',
@@ -98,21 +103,39 @@ export function FaceFilter(): React.ReactElement {
 
   // Render loop
   useEffect(() => {
-    if (isLoading || !isCameraReady) return;
+    if (isLoading || !isCameraReady) {
+      console.log('[Render] Waiting... isLoading:', isLoading, 'isCameraReady:', isCameraReady);
+      return;
+    }
+
+    console.log('[Render] Starting render loop');
+    let frameCount = 0;
 
     function renderFrame(): void {
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      if (!video || !canvas) return;
+      if (!video || !canvas) {
+        console.warn('[Render] Missing refs - video:', !!video, 'canvas:', !!canvas);
+        return;
+      }
 
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        console.warn('[Render] Cannot get 2d context');
+        return;
+      }
 
       // Skip frame if video not ready yet (common on mobile)
       if (!video.videoWidth || !video.videoHeight) {
+        if (frameCount === 0) console.log('[Render] Video dimensions not ready yet, waiting...');
         animFrameRef.current = requestAnimationFrame(renderFrame);
         return;
       }
+
+      if (frameCount === 0) {
+        console.log('[Render] First frame! Video:', video.videoWidth, 'x', video.videoHeight);
+      }
+      frameCount++;
 
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -218,8 +241,8 @@ export function FaceFilter(): React.ReactElement {
           autoPlay
           playsInline
           muted
-          className="pointer-events-none"
-          style={{ position: 'fixed', top: '-9999px', left: '-9999px' }}
+          className="pointer-events-none absolute"
+          style={{ width: '1px', height: '1px', opacity: 0, overflow: 'hidden' }}
         />
         <canvas
           ref={canvasRef}
