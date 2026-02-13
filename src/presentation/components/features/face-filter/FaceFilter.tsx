@@ -194,84 +194,79 @@ export function FaceFilter(): React.ReactElement {
     setSelectedFilterId(filterId);
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="h-dvh flex flex-col items-center justify-center bg-gradient-to-b from-red-900 to-red-950 text-white">
-        <div className="animate-spin w-12 h-12 border-4 border-amber-400 border-t-transparent rounded-full" />
-        <p className="mt-4 text-amber-200">Đang tải mô hình nhận diện khuôn mặt...</p>
-      </div>
-    );
-  }
-
-  if (hasError || cameraError) {
-    return (
-      <div className="h-dvh flex flex-col items-center justify-center bg-gradient-to-b from-red-900 to-red-950 text-white p-6">
-        <p className="text-2xl mb-2">😞</p>
-        <p className="text-center text-amber-200">{errorMessage || cameraError}</p>
-        <Link
-          href="/lixi/greeting"
-          className="mt-6 px-6 py-3 bg-amber-500 text-red-900 font-bold rounded-full"
-          aria-label="Quay lại"
-        >
-          Quay lại
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="h-dvh flex flex-col bg-gradient-to-b from-red-900 to-red-950 overflow-hidden">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3">
-        <Link
-          href="/lixi/greeting"
-          className="text-amber-200 text-sm flex items-center gap-1"
-          aria-label="Quay lại"
-        >
-          ← Quay lại
-        </Link>
-        <h1 className="text-amber-200 font-bold text-lg">Face Filter</h1>
-        <div className="w-16" />
-      </header>
+      {/* Hidden video — always in DOM so videoRef is available when camera stream arrives */}
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        className="pointer-events-none absolute"
+        style={{ width: '1px', height: '1px', opacity: 0, overflow: 'hidden' }}
+      />
 
-      {/* Camera + Canvas */}
-      <main className="flex-1 relative flex items-center justify-center overflow-hidden bg-black">
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="pointer-events-none absolute"
-          style={{ width: '1px', height: '1px', opacity: 0, overflow: 'hidden' }}
-        />
-        <canvas
-          ref={canvasRef}
-          className="max-w-full max-h-full"
-          style={{ transform: 'scaleX(-1)', objectFit: 'contain' }}
-        />
-      </main>
-
-      {/* Controls */}
-      <footer className="px-4 pb-6 pt-3 space-y-3">
-        {/* Filter selector */}
-        <FilterSelector
-          filters={FILTERS}
-          selectedFilterId={selectedFilterId}
-          onSelectFilter={handleSelectFilter}
-        />
-
-        {/* Capture button */}
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={handleCapture}
-            aria-label="Chụp ảnh"
-            className="w-16 h-16 rounded-full border-4 border-amber-400 bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 active:scale-90 transition-all"
-          >
-            <div className="w-12 h-12 rounded-full bg-amber-400" />
-          </button>
+      {isLoading ? (
+        <div className="flex-1 flex flex-col items-center justify-center text-white">
+          <div className="animate-spin w-12 h-12 border-4 border-amber-400 border-t-transparent rounded-full" />
+          <p className="mt-4 text-amber-200">Đang tải mô hình nhận diện khuôn mặt...</p>
         </div>
-      </footer>
+      ) : hasError || cameraError ? (
+        <div className="flex-1 flex flex-col items-center justify-center text-white p-6">
+          <p className="text-2xl mb-2">😞</p>
+          <p className="text-center text-amber-200">{errorMessage || cameraError}</p>
+          <Link
+            href="/lixi/greeting"
+            className="mt-6 px-6 py-3 bg-amber-500 text-red-900 font-bold rounded-full"
+            aria-label="Quay lại"
+          >
+            Quay lại
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Header */}
+          <header className="flex items-center justify-between px-4 py-3">
+            <Link
+              href="/lixi/greeting"
+              className="text-amber-200 text-sm flex items-center gap-1"
+              aria-label="Quay lại"
+            >
+              ← Quay lại
+            </Link>
+            <h1 className="text-amber-200 font-bold text-lg">Face Filter</h1>
+            <div className="w-16" />
+          </header>
+
+          {/* Camera + Canvas */}
+          <main className="flex-1 relative flex items-center justify-center overflow-hidden bg-black">
+            <canvas
+              ref={canvasRef}
+              className="max-w-full max-h-full"
+              style={{ transform: 'scaleX(-1)', objectFit: 'contain' }}
+            />
+          </main>
+
+          {/* Controls */}
+          <footer className="px-4 pb-6 pt-3 space-y-3">
+            <FilterSelector
+              filters={FILTERS}
+              selectedFilterId={selectedFilterId}
+              onSelectFilter={handleSelectFilter}
+            />
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={handleCapture}
+                aria-label="Chụp ảnh"
+                className="w-16 h-16 rounded-full border-4 border-amber-400 bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 active:scale-90 transition-all"
+              >
+                <div className="w-12 h-12 rounded-full bg-amber-400" />
+              </button>
+            </div>
+          </footer>
+        </>
+      )}
     </div>
   );
 }
