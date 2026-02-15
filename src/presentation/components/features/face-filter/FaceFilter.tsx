@@ -144,11 +144,13 @@ export function FaceFilter(): React.ReactElement {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const result = detect(video, performance.now());
-      if (result?.faceLandmarks?.[0] && selectedFilterId) {
+      if (result?.faceLandmarks && selectedFilterId) {
         const filter = FILTERS.find((f) => f.id === selectedFilterId);
         const image = filterImagesRef.current.get(selectedFilterId);
         if (filter && image) {
-          drawFilter(ctx, result.faceLandmarks[0], filter, image, canvas.width, canvas.height);
+          for (const landmarks of result.faceLandmarks) {
+            drawFilter(ctx, landmarks, filter, image, canvas.width, canvas.height);
+          }
         }
       }
 

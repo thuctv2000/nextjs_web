@@ -44,7 +44,7 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
               delegate: 'GPU',
             },
             runningMode: 'VIDEO',
-            numFaces: 1,
+            numFaces: 3,
             outputFaceBlendshapes: false,
             outputFacialTransformationMatrixes: false,
           });
@@ -63,7 +63,7 @@ export function useFaceLandmarker(): UseFaceLandmarkerReturn {
                 delegate: 'CPU',
               },
               runningMode: 'VIDEO',
-              numFaces: 1,
+              numFaces: 3,
               outputFaceBlendshapes: false,
               outputFacialTransformationMatrixes: false,
             });

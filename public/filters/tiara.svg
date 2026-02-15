@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <defs>
+    <linearGradient id="tiaraG" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E0E0E0"/>
+      <stop offset="100%" stop-color="#9E9E9E"/>
+    </linearGradient>
+  </defs>
+  <path d="M15,70 L30,30 L55,55 L80,20 L100,10 L120,20 L145,55 L170,30 L185,70 Z" fill="url(#tiaraG)" stroke="#757575" stroke-width="2"/>
+  <circle cx="100" cy="18" r="6" fill="#E91E63"/>
+  <circle cx="80" cy="28" r="4" fill="#2196F3"/>
+  <circle cx="120" cy="28" r="4" fill="#2196F3"/>
+  <circle cx="55" cy="50" r="3" fill="#4CAF50"/>
+  <circle cx="145" cy="50" r="3" fill="#4CAF50"/>
+  <rect x="15" y="65" width="170" height="8" rx="2" fill="url(#tiaraG)" stroke="#757575" stroke-width="1"/>
+</svg>

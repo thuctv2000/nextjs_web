@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150" width="220" height="150">
+  <path d="M20,130 Q50,30 110,20 Q170,30 200,130" fill="#212121" stroke="#111" stroke-width="2"/>
+  <path d="M10,130 Q10,115 110,115 Q210,115 210,130 Q210,140 110,140 Q10,140 10,130" fill="#333"/>
+  <!-- Skull -->
+  <circle cx="110" cy="70" r="18" fill="white"/>
+  <circle cx="103" cy="67" r="4" fill="#212121"/>
+  <circle cx="117" cy="67" r="4" fill="#212121"/>
+  <path d="M103,80 L110,78 L117,80" fill="none" stroke="#212121" stroke-width="1.5"/>
+  <!-- Crossbones -->
+  <line x1="85" y1="90" x2="135" y2="95" stroke="white" stroke-width="4" stroke-linecap="round"/>
+  <line x1="85" y1="95" x2="135" y2="90" stroke="white" stroke-width="4" stroke-linecap="round"/>
+</svg>

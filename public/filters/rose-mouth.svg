@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="160" height="80">
+  <!-- Stem -->
+  <line x1="80" y1="40" x2="150" y2="70" stroke="#388E3C" stroke-width="3"/>
+  <path d="M110,58 Q120,50 125,55" fill="#4CAF50" stroke="#388E3C" stroke-width="1"/>
+  <path d="M120,62 Q130,55 135,60" fill="#4CAF50" stroke="#388E3C" stroke-width="1"/>
+  <!-- Rose petals -->
+  <ellipse cx="80" cy="35" rx="22" ry="18" fill="#E53935" transform="rotate(-10 80 35)"/>
+  <ellipse cx="72" cy="30" rx="18" ry="14" fill="#F44336" transform="rotate(-20 72 30)"/>
+  <ellipse cx="88" cy="30" rx="18" ry="14" fill="#EF5350" transform="rotate(15 88 30)"/>
+  <ellipse cx="80" cy="25" rx="14" ry="10" fill="#C62828"/>
+  <circle cx="80" cy="28" r="6" fill="#B71C1C"/>
+</svg>

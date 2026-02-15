@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <!-- Left lens -->
+  <circle cx="50" cy="40" r="30" fill="white" fill-opacity="0.2" stroke="#212121" stroke-width="4"/>
+  <!-- Right lens -->
+  <circle cx="150" cy="40" r="30" fill="white" fill-opacity="0.2" stroke="#212121" stroke-width="4"/>
+  <!-- Bridge -->
+  <path d="M80,40 Q100,50 120,40" fill="none" stroke="#212121" stroke-width="4"/>
+  <!-- Arms -->
+  <line x1="20" y1="35" x2="2" y2="30" stroke="#212121" stroke-width="4"/>
+  <line x1="180" y1="35" x2="198" y2="30" stroke="#212121" stroke-width="4"/>
+  <!-- Tape on bridge -->
+  <rect x="95" y="35" width="10" height="12" fill="#FFECB3" stroke="#FFC107" stroke-width="1" opacity="0.8"/>
+</svg>

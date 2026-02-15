@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <defs>
+    <radialGradient id="maneG" cx="50%" cy="50%">
+      <stop offset="60%" stop-color="transparent"/>
+      <stop offset="70%" stop-color="#FF8F00"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </radialGradient>
+  </defs>
+  <!-- Mane spikes -->
+  <g fill="#FF8F00" stroke="#E65100" stroke-width="1">
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(0 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(30 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(60 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(90 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(120 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(150 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(180 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(210 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(240 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(270 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(300 120 120)"/>
+    <ellipse cx="120" cy="15" rx="20" ry="30" transform="rotate(330 120 120)"/>
+  </g>
+  <!-- Clear center for face -->
+  <circle cx="120" cy="120" r="75" fill="rgba(0,0,0,0)"/>
+</svg>

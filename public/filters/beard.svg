@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" width="200" height="160">
+  <!-- Main beard shape -->
+  <path d="M20,10 Q20,0 40,5 Q60,10 80,8 Q100,5 120,8 Q140,10 160,5 Q180,0 180,10 Q185,50 175,80 Q165,110 140,130 Q120,145 100,150 Q80,145 60,130 Q35,110 25,80 Q15,50 20,10 Z" fill="#5D4037"/>
+  <!-- Beard texture -->
+  <path d="M40,20 Q50,50 55,90 Q60,110 70,125" fill="none" stroke="#4E342E" stroke-width="2" opacity="0.4"/>
+  <path d="M80,15 Q85,55 90,95 Q95,120 100,140" fill="none" stroke="#4E342E" stroke-width="2" opacity="0.4"/>
+  <path d="M120,15 Q115,55 110,95 Q105,120 100,140" fill="none" stroke="#4E342E" stroke-width="2" opacity="0.4"/>
+  <path d="M160,20 Q150,50 145,90 Q140,110 130,125" fill="none" stroke="#4E342E" stroke-width="2" opacity="0.4"/>
+</svg>

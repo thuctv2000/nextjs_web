@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 70" width="140" height="70">
+  <!-- Upper lip -->
+  <path d="M10,35 Q30,10 55,25 Q70,8 85,25 Q110,10 130,35" fill="#E91E63" stroke="#C2185B" stroke-width="2"/>
+  <!-- Lower lip -->
+  <path d="M10,35 Q70,75 130,35" fill="#EC407A" stroke="#C2185B" stroke-width="2"/>
+  <!-- Shine -->
+  <ellipse cx="70" cy="45" rx="20" ry="8" fill="#F48FB1" opacity="0.5"/>
+</svg>

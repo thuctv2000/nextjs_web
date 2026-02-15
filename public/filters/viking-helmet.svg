@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" width="240" height="160">
+  <!-- Horns -->
+  <path d="M30,120 Q5,70 15,20 Q20,40 35,60 Q40,80 45,100" fill="#F5F5DC" stroke="#A1887F" stroke-width="2"/>
+  <path d="M210,120 Q235,70 225,20 Q220,40 205,60 Q200,80 195,100" fill="#F5F5DC" stroke="#A1887F" stroke-width="2"/>
+  <!-- Helmet -->
+  <path d="M40,150 Q40,60 120,50 Q200,60 200,150" fill="#78909C" stroke="#546E7A" stroke-width="2"/>
+  <line x1="120" y1="50" x2="120" y2="150" stroke="#546E7A" stroke-width="3"/>
+  <path d="M40,120 L200,120" stroke="#FFB300" stroke-width="6"/>
+  <!-- Nose guard -->
+  <rect x="112" y="100" width="16" height="50" rx="3" fill="#78909C" stroke="#546E7A" stroke-width="2"/>
+</svg>

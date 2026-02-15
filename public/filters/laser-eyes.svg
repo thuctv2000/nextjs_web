@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+  <defs>
+    <radialGradient id="glowL" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#FF1744"/>
+      <stop offset="50%" stop-color="#FF1744" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <radialGradient id="glowR" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#FF1744"/>
+      <stop offset="50%" stop-color="#FF1744" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+  </defs>
+  <!-- Left glow -->
+  <circle cx="50" cy="30" r="25" fill="url(#glowL)"/>
+  <circle cx="50" cy="30" r="8" fill="white"/>
+  <!-- Right glow -->
+  <circle cx="150" cy="30" r="25" fill="url(#glowR)"/>
+  <circle cx="150" cy="30" r="8" fill="white"/>
+  <!-- Beams -->
+  <polygon points="42,35 0,110 20,115" fill="#FF1744" opacity="0.5"/>
+  <polygon points="50,38 40,115 60,115" fill="#FF1744" opacity="0.4"/>
+  <polygon points="158,35 200,110 180,115" fill="#FF1744" opacity="0.5"/>
+  <polygon points="150,38 140,115 160,115" fill="#FF1744" opacity="0.4"/>
+</svg>

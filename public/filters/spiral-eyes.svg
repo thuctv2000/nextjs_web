@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <!-- Left spiral -->
+  <circle cx="50" cy="40" r="30" fill="white" fill-opacity="0.3"/>
+  <path d="M50,40 Q50,25 65,25 Q80,25 80,40 Q80,55 62,55 Q45,55 45,40 Q45,30 57,28 Q70,28 72,40 Q72,50 58,50 Q48,50 50,40" fill="none" stroke="#212121" stroke-width="3"/>
+  <!-- Right spiral -->
+  <circle cx="150" cy="40" r="30" fill="white" fill-opacity="0.3"/>
+  <path d="M150,40 Q150,25 165,25 Q180,25 180,40 Q180,55 162,55 Q145,55 145,40 Q145,30 157,28 Q170,28 172,40 Q172,50 158,50 Q148,50 150,40" fill="none" stroke="#212121" stroke-width="3"/>
+</svg>

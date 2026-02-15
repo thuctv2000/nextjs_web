@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 160" width="220" height="160">
+  <!-- Left antler -->
+  <path d="M70,150 Q65,100 55,70 Q45,40 30,20" fill="none" stroke="#5D4037" stroke-width="8" stroke-linecap="round"/>
+  <path d="M55,70 Q40,55 25,50" fill="none" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
+  <path d="M60,90 Q45,80 35,75" fill="none" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
+  <path d="M30,20 Q20,10 15,5" fill="none" stroke="#5D4037" stroke-width="5" stroke-linecap="round"/>
+  <!-- Right antler -->
+  <path d="M150,150 Q155,100 165,70 Q175,40 190,20" fill="none" stroke="#5D4037" stroke-width="8" stroke-linecap="round"/>
+  <path d="M165,70 Q180,55 195,50" fill="none" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
+  <path d="M160,90 Q175,80 185,75" fill="none" stroke="#5D4037" stroke-width="6" stroke-linecap="round"/>
+  <path d="M190,20 Q200,10 205,5" fill="none" stroke="#5D4037" stroke-width="5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="160" height="80">
+  <!-- Upper lip -->
+  <path d="M10,15 Q80,0 150,15 Q150,20 80,25 Q10,20 10,15" fill="#C62828"/>
+  <!-- Teeth row -->
+  <rect x="20" y="15" width="120" height="12" fill="white" rx="2"/>
+  <!-- Fangs -->
+  <polygon points="35,15 45,15 40,55" fill="white" stroke="#E0E0E0" stroke-width="1"/>
+  <polygon points="115,15 125,15 120,55" fill="white" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Blood drips -->
+  <ellipse cx="40" cy="58" rx="3" ry="5" fill="#B71C1C"/>
+  <ellipse cx="120" cy="58" rx="3" ry="5" fill="#B71C1C"/>
+</svg>

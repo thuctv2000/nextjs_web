@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <defs>
+    <linearGradient id="goldG" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="50%" stop-color="#FFC107"/>
+      <stop offset="100%" stop-color="#FF8F00"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="5" width="140" height="40" rx="5" fill="url(#goldG)" stroke="#E65100" stroke-width="2"/>
+  <!-- Tooth separators -->
+  <line x1="30" y1="5" x2="30" y2="45" stroke="#E65100" stroke-width="1"/>
+  <line x1="50" y1="5" x2="50" y2="45" stroke="#E65100" stroke-width="1"/>
+  <line x1="70" y1="5" x2="70" y2="45" stroke="#E65100" stroke-width="1"/>
+  <line x1="90" y1="5" x2="90" y2="45" stroke="#E65100" stroke-width="1"/>
+  <line x1="110" y1="5" x2="110" y2="45" stroke="#E65100" stroke-width="1"/>
+  <line x1="130" y1="5" x2="130" y2="45" stroke="#E65100" stroke-width="1"/>
+  <!-- Diamond on center tooth -->
+  <polygon points="80,18 87,25 80,32 73,25" fill="white" stroke="#E0E0E0" stroke-width="1"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100">
+  <!-- Left eye ring -->
+  <circle cx="55" cy="50" r="40" fill="#8D6E63" stroke="#5D4037" stroke-width="3"/>
+  <circle cx="55" cy="50" r="30" fill="#FFF8E1"/>
+  <circle cx="55" cy="48" r="16" fill="#FF8F00"/>
+  <circle cx="55" cy="48" r="8" fill="#212121"/>
+  <circle cx="58" cy="44" r="3" fill="white"/>
+  <!-- Right eye ring -->
+  <circle cx="145" cy="50" r="40" fill="#8D6E63" stroke="#5D4037" stroke-width="3"/>
+  <circle cx="145" cy="50" r="30" fill="#FFF8E1"/>
+  <circle cx="145" cy="48" r="16" fill="#FF8F00"/>
+  <circle cx="145" cy="48" r="8" fill="#212121"/>
+  <circle cx="148" cy="44" r="3" fill="white"/>
+  <!-- Beak -->
+  <polygon points="100,55 90,75 110,75" fill="#FF8F00" stroke="#E65100" stroke-width="1"/>
+</svg>

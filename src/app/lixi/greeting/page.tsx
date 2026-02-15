@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { GreetingCardEnvelope } from '@/presentation/components/features/lixi/GreetingCardEnvelope';
 import { BackgroundEffects } from '@/presentation/components/features/lixi/BackgroundEffects';
@@ -61,6 +62,7 @@ export default function GreetingPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [userName, setUserName] = useState('');
+  const [showQR, setShowQR] = useState(false);
   const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -185,21 +187,38 @@ export default function GreetingPage() {
             Chọn một bao lì xì để mở thiệp chúc Tết! 🎊
           </p>
 
-          <Link
-            href="/face-filter"
-            className={cn(
-              'mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-full',
-              'bg-gradient-to-r from-amber-400 to-amber-500',
-              'text-red-900 font-semibold text-sm',
-              'shadow-lg shadow-amber-500/30',
-              'hover:from-amber-500 hover:to-amber-600',
-              'hover:-translate-y-0.5',
-              'active:scale-95',
-              'transition-all duration-200'
-            )}
-          >
-            📸 Face Filter Tết
-          </Link>
+          <div className="mt-3 flex items-center justify-center gap-3 flex-wrap">
+            <Link
+              href="/face-filter"
+              className={cn(
+                'inline-flex items-center gap-2 px-5 py-2 rounded-full',
+                'bg-gradient-to-r from-amber-400 to-amber-500',
+                'text-red-900 font-semibold text-sm',
+                'shadow-lg shadow-amber-500/30',
+                'hover:from-amber-500 hover:to-amber-600',
+                'hover:-translate-y-0.5',
+                'active:scale-95',
+                'transition-all duration-200'
+              )}
+            >
+              📸 Face Filter Tết
+            </Link>
+            <button
+              onClick={() => setShowQR(true)}
+              className={cn(
+                'inline-flex items-center gap-2 px-5 py-2 rounded-full',
+                'bg-gradient-to-r from-emerald-400 to-emerald-500',
+                'text-white font-semibold text-sm',
+                'shadow-lg shadow-emerald-500/30',
+                'hover:from-emerald-500 hover:to-emerald-600',
+                'hover:-translate-y-0.5',
+                'active:scale-95',
+                'transition-all duration-200'
+              )}
+            >
+              💸 Chuyển tiền
+            </button>
+          </div>
         </header>
 
         {/* Envelopes grid */}
@@ -236,7 +255,7 @@ export default function GreetingPage() {
               {/* Close button - top right of white box */}
               <button
                 onClick={handleCloseDialog}
-                className="absolute top-[10%] right-[18%] w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/80 text-gray-500 hover:bg-white hover:text-gray-800 text-sm sm:text-base z-10 transition-all shadow-md"
+                className="absolute -top-0 -right-0 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-500 text-white hover:bg-gray-100 hover:text-gray-800 text-base sm:text-lg z-10 transition-all shadow-lg"
               >
                 ✕
               </button>
@@ -403,6 +422,34 @@ export default function GreetingPage() {
           </p>
         </footer>
       </div>
+
+      {/* QR Code Modal */}
+      {showQR && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+          onClick={() => setShowQR(false)}
+        >
+          <div
+            className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowQR(false)}
+              className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-800 z-10 transition-all"
+            >
+              ✕
+            </button>
+            <Image
+              src="/myQR.jpg"
+              alt="QR chuyển tiền"
+              width={400}
+              height={600}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

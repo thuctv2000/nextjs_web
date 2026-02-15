@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <!-- Mask wrap -->
+  <path d="M0,30 Q120,10 240,30 L240,90 Q120,110 0,90 Z" fill="#212121" opacity="0.85"/>
+  <!-- Eye slit -->
+  <path d="M30,55 Q120,40 210,55 L210,65 Q120,50 30,65 Z" fill="black"/>
+  <!-- Headband knot -->
+  <path d="M230,50 Q250,40 255,55 Q260,70 240,65" fill="#212121"/>
+  <path d="M230,55 Q248,48 252,58 Q255,68 238,63" fill="#333"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Tear drop -->
+  <path d="M50,10 Q55,30 50,45 Q45,30 50,10 Z" fill="#1A237E" opacity="0.7"/>
+  <!-- Star -->
+  <polygon points="50,55 53,63 62,63 55,68 58,77 50,72 42,77 45,68 38,63 47,63" fill="none" stroke="#1A237E" stroke-width="1.5" opacity="0.6"/>
+  <!-- Cross -->
+  <line x1="45" y1="82" x2="55" y2="82" stroke="#1A237E" stroke-width="1.5" opacity="0.5"/>
+  <line x1="50" y1="77" x2="50" y2="87" stroke="#1A237E" stroke-width="1.5" opacity="0.5"/>
+</svg>

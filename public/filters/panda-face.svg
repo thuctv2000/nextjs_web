@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Ears -->
+  <circle cx="30" cy="30" r="30" fill="#212121"/>
+  <circle cx="170" cy="30" r="30" fill="#212121"/>
+  <!-- Eye patches -->
+  <ellipse cx="60" cy="80" rx="35" ry="28" fill="#212121" transform="rotate(-15 60 80)"/>
+  <ellipse cx="140" cy="80" rx="35" ry="28" fill="#212121" transform="rotate(15 140 80)"/>
+  <!-- Eyes -->
+  <circle cx="60" cy="78" r="10" fill="white"/>
+  <circle cx="62" cy="78" r="5" fill="#212121"/>
+  <circle cx="140" cy="78" r="10" fill="white"/>
+  <circle cx="138" cy="78" r="5" fill="#212121"/>
+  <!-- Nose -->
+  <ellipse cx="100" cy="115" rx="14" ry="10" fill="#212121"/>
+</svg>

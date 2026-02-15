@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130" width="200" height="130">
+  <!-- Left horn -->
+  <path d="M55,125 Q30,60 15,10 Q50,50 75,125 Z" fill="#D32F2F"/>
+  <path d="M55,125 Q35,70 25,25 Q50,60 70,120" fill="#F44336" opacity="0.6"/>
+  <!-- Right horn -->
+  <path d="M145,125 Q170,60 185,10 Q150,50 125,125 Z" fill="#D32F2F"/>
+  <path d="M145,125 Q165,70 175,25 Q150,60 130,120" fill="#F44336" opacity="0.6"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 160" width="220" height="160">
+  <!-- Headband -->
+  <path d="M30,130 Q30,20 110,15 Q190,20 190,130" fill="none" stroke="#333" stroke-width="10" stroke-linecap="round"/>
+  <!-- Left ear cup -->
+  <rect x="10" y="100" width="40" height="55" rx="10" fill="#333" stroke="#222" stroke-width="2"/>
+  <rect x="15" y="108" width="30" height="40" rx="8" fill="#555"/>
+  <!-- Right ear cup -->
+  <rect x="170" y="100" width="40" height="55" rx="10" fill="#333" stroke="#222" stroke-width="2"/>
+  <rect x="175" y="108" width="30" height="40" rx="8" fill="#555"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" width="200" height="180">
+  <!-- Left ear -->
+  <ellipse cx="55" cy="70" rx="25" ry="65" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2" transform="rotate(-10 55 70)"/>
+  <ellipse cx="55" cy="70" rx="14" ry="50" fill="#FFB6C1" transform="rotate(-10 55 70)"/>
+  <!-- Right ear -->
+  <ellipse cx="145" cy="70" rx="25" ry="65" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2" transform="rotate(10 145 70)"/>
+  <ellipse cx="145" cy="70" rx="14" ry="50" fill="#FFB6C1" transform="rotate(10 145 70)"/>
+</svg>

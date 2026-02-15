@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150" width="220" height="150">
+  <!-- Left horn -->
+  <path d="M60,140 Q40,90 25,60 Q15,30 5,10 Q20,25 30,20 Q25,45 35,50 Q30,70 45,75 Q40,95 55,100" fill="#F44336" stroke="#C62828" stroke-width="2"/>
+  <!-- Right horn -->
+  <path d="M160,140 Q180,90 195,60 Q205,30 215,10 Q200,25 190,20 Q195,45 185,50 Q190,70 175,75 Q180,95 165,100" fill="#F44336" stroke="#C62828" stroke-width="2"/>
+  <!-- Scales -->
+  <circle cx="40" cy="105" r="5" fill="#EF5350" opacity="0.6"/>
+  <circle cx="30" cy="80" r="4" fill="#EF5350" opacity="0.6"/>
+  <circle cx="22" cy="55" r="3" fill="#EF5350" opacity="0.6"/>
+  <circle cx="180" cy="105" r="5" fill="#EF5350" opacity="0.6"/>
+  <circle cx="190" cy="80" r="4" fill="#EF5350" opacity="0.6"/>
+  <circle cx="198" cy="55" r="3" fill="#EF5350" opacity="0.6"/>
+</svg>
