@@ -1,29 +1,160 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: #0de3f2;
+  --color-bg-dark: #09090B;
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-border: rgba(255, 255, 255, 0.08);
+  --color-text-primary: #F8FAFC;
+  --color-text-muted: #94A3B8;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #09090B;
+  color: #F8FAFC;
+  font-family: "Manrope", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+::selection {
+  background-color: rgba(13, 227, 242, 0.3);
+  color: #0de3f2;
+}
+
+/* ========================================
+   PORTFOLIO - GLASS & EFFECTS
+   ======================================== */
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 24px rgba(13, 227, 242, 0.1);
+  border-color: rgba(13, 227, 242, 0.3);
+}
+
+.glass-card:hover .tech-tag {
+  color: #0de3f2;
+  border-color: rgba(13, 227, 242, 0.3);
+  background-color: rgba(13, 227, 242, 0.05);
+}
+
+.skill-pill {
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 0 1px transparent;
+}
+
+.skill-pill:hover {
+  background: rgba(13, 227, 242, 0.1);
+  box-shadow: inset 0 0 0 1px #0de3f2, 0 0 20px rgba(13, 227, 242, 0.2);
+  color: #0de3f2;
+  transform: translateY(-2px);
+}
+
+.hover-underline-animation {
+  display: inline-block;
+  position: relative;
+}
+
+.hover-underline-animation::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #0de3f2;
+  transform-origin: bottom center;
+  transition: transform 0.3s ease-out;
+}
+
+.group:hover .hover-underline-animation::after {
+  transform: scaleX(1);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px rgba(13, 227, 242, 0.3), 0 0 20px rgba(13, 227, 242, 0.2);
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 20px rgba(13, 227, 242, 0.4);
+}
+
+/* Typewriter */
+.typewriter-text {
+  overflow: hidden;
+  border-right: .15em solid #0de3f2;
+  white-space: nowrap;
+  letter-spacing: .05em;
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #0de3f2 }
+}
+
+/* Masonry Grid */
+@media (min-width: 768px) {
+  .masonry-grid {
+    column-count: 2;
+    column-gap: 1.5rem;
+  }
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Stagger animations */
+.stagger-1 { animation-delay: 100ms; opacity: 0; }
+.stagger-2 { animation-delay: 150ms; opacity: 0; }
+.stagger-3 { animation-delay: 200ms; opacity: 0; }
+.stagger-4 { animation-delay: 250ms; opacity: 0; }
+.stagger-5 { animation-delay: 300ms; opacity: 0; }
+.stagger-6 { animation-delay: 350ms; opacity: 0; }
+.stagger-7 { animation-delay: 400ms; opacity: 0; }
+.stagger-8 { animation-delay: 450ms; opacity: 0; }
+.stagger-9 { animation-delay: 500ms; opacity: 0; }
+
+/* Portfolio fade-in */
+@keyframes portfolio-fade-in {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-portfolio-fade-in {
+  animation: portfolio-fade-in 800ms ease-out forwards;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #09090B; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
 /* ========================================
    LI XI TET - ANIMATIONS & KEYFRAMES
