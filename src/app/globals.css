@@ -2,6 +2,7 @@
 
 @theme inline {
   --color-primary: #0de3f2;
+  --color-accent-purple: #8B5CF6;
   --color-bg-dark: #09090B;
   --color-surface: rgba(255, 255, 255, 0.03);
   --color-surface-border: rgba(255, 255, 255, 0.08);
@@ -155,6 +156,28 @@ body {
 ::-webkit-scrollbar-track { background: #09090B; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* ========================================
+   LOGIN PAGE
+   ======================================== */
+
+.neon-glow:focus-within {
+  box-shadow: 0 0 15px rgba(13, 227, 242, 0.2);
+  border-color: #0de3f2;
+}
+
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+}
+
+.geometric-shape {
+  transition: transform 0.3s ease;
+}
+
+.geometric-shape:hover {
+  transform: translateY(-5px);
+}
 
 /* ========================================
    LI XI TET - ANIMATIONS & KEYFRAMES
