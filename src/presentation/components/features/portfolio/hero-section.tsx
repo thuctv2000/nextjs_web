@@ -15,48 +15,76 @@ export function HeroSection() {
 
   useEffect(() => {
     const root = rootRef.current!;
-    const chars = root.querySelectorAll('.hero-title .char');
+    const chars = root.querySelectorAll<HTMLElement>('.hero-title .char');
     const reveals = root.querySelectorAll('.hero-reveal');
 
-    // card / blurb / meta reveal right after the preloader lifts
-    let revealed = false;
-    const playReveals = () => {
-      if (revealed) return;
-      revealed = true;
+    let played = false;
+    const play = () => {
+      if (played) return;
+      played = true;
+
+      // each letter drops in standing on the particle net, bobs with the
+      // waves, then walks up into its slot in the title one by one
+      chars.forEach((char, i) => {
+        const surfaceY = window.innerHeight * 0.52;
+        const driftX = gsap.utils.random(-0.12, 0.12) * window.innerWidth;
+
+        gsap.set(char, {
+          y: surfaceY,
+          x: driftX,
+          scale: 0.38,
+          rotation: gsap.utils.random(-10, 10),
+          opacity: 0,
+        });
+
+        // surface bob — killed automatically when the departure tween
+        // overwrites y/rotation
+        gsap.to(char, {
+          opacity: 1,
+          duration: 0.45,
+          ease: 'power2.out',
+          delay: 0.18 * i,
+        });
+        gsap.to(char, {
+          y: surfaceY - 16,
+          rotation: gsap.utils.random(-6, 6),
+          duration: gsap.utils.random(0.6, 0.9),
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: 0.18 * i,
+        });
+
+        // departure: one letter at a time rises into position
+        gsap.to(char, {
+          y: 0,
+          x: 0,
+          scale: 1,
+          rotation: 0,
+          duration: 1.15,
+          ease: 'power3.inOut',
+          delay: 1.2 + i * 0.5,
+          overwrite: 'auto',
+        });
+      });
+
       gsap.to(reveals, {
         opacity: 1,
         y: 0,
         duration: 0.9,
         ease: 'power3.out',
         stagger: 0.12,
+        delay: 0.4,
       });
     };
 
-    // title chars rise as the particle glyph zooms into the camera
-    let titled = false;
-    const playTitle = () => {
-      if (titled) return;
-      titled = true;
-      gsap.to(chars, {
-        y: 0,
-        duration: 1.1,
-        ease: 'power4.out',
-        stagger: 0.05,
-        delay: 0.35,
-      });
-    };
-
-    window.addEventListener('preloader:done', playReveals);
-    window.addEventListener('herotext:zoom', playTitle);
-    // fallbacks if the preloader / WebGL morph never fire
-    const revealFallback = setTimeout(playReveals, 3200);
-    const titleFallback = setTimeout(playTitle, 7200);
+    window.addEventListener('preloader:done', play);
+    // fallback if preloader already finished / absent
+    const fallback = setTimeout(play, 3200);
 
     return () => {
-      window.removeEventListener('preloader:done', playReveals);
-      window.removeEventListener('herotext:zoom', playTitle);
-      clearTimeout(revealFallback);
-      clearTimeout(titleFallback);
+      window.removeEventListener('preloader:done', play);
+      clearTimeout(fallback);
     };
   }, []);
 
@@ -70,10 +98,8 @@ export function HeroSection() {
           </span>
           <h1 className="hero-title" aria-label={profile.displayName}>
             {profile.displayName.split('').map((c, i) => (
-              <span className="mask" key={i}>
-                <span className="char" style={{ transform: 'translateY(110%)' }}>
-                  {c}
-                </span>
+              <span className="char" key={i}>
+                {c}
               </span>
             ))}
           </h1>

@@ -976,15 +976,10 @@ body {
   text-transform: uppercase;
 }
 
-.portfolio-root .hero-title .mask {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-}
-
 .portfolio-root .hero-title .char {
   display: inline-block;
-  transform: translateY(110%);
+  opacity: 0;
+  will-change: transform;
 }
 
 .portfolio-root .hero-bottom {
