@@ -1,5 +1,12 @@
+export { SmoothScroll } from './smooth-scroll';
+export { Cursor } from './cursor';
+export { Preloader } from './preloader';
 export { PortfolioHeader } from './portfolio-header';
+export { Frame } from './frame';
 export { HeroSection } from './hero-section';
+export { Marquee } from './marquee';
+export { BigWord } from './big-word';
+export { Craft } from './craft';
+export { Stats } from './stats';
 export { ProjectsSection } from './projects-section';
 export { ContactSection } from './contact-section';
-export { PortfolioFooter } from './portfolio-footer';

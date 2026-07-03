@@ -1,87 +1,112 @@
-const CORE_SKILLS = ['Flutter', 'Dart', 'Clean Architecture', 'BLoC/Cubit', 'Provider', 'RESTful APIs'];
-const NATIVE_SKILLS = ['Native Android', 'Kotlin / Java', 'BLE', 'NFC', 'Google Maps', 'WebSockets'];
-const TOOL_SKILLS = ['CI/CD', 'Git', 'Firebase', 'Dio', 'GetIt', 'Hive'];
+'use client';
 
-interface SkillGroupProps {
-  title: string;
-  skills: string[];
-}
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import dynamic from 'next/dynamic';
+import { profile } from '@/lib/portfolio-data';
 
-function SkillGroup({ title, skills }: SkillGroupProps) {
-  return (
-    <div className="mb-12 animate-portfolio-fade-in">
-      <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold mb-6 text-text-primary border-b border-surface-border pb-4">
-        {title}
-      </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {skills.map((skill) => (
-          <div
-            key={skill}
-            className="skill-pill glass-panel rounded-lg px-4 py-3 flex items-center justify-center text-sm font-[family-name:var(--font-mono)] cursor-default"
-          >
-            {skill}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+const ParticleField = dynamic(
+  () => import('./particle-field').then((mod) => mod.ParticleField),
+  { ssr: false }
+);
 
 export function HeroSection() {
-  return (
-    <section id="home" className="max-w-[1440px] mx-auto px-6 lg:px-12 pt-24 pb-12 min-h-screen flex flex-col lg:flex-row gap-12 lg:gap-24">
-      {/* Left: Sticky Hero */}
-      <div className="lg:w-1/2 lg:sticky lg:top-32 lg:h-[calc(100vh-10rem)] flex flex-col justify-center animate-portfolio-fade-in">
-        <div className="space-y-6">
-          <h1 className="font-[family-name:var(--font-display)] text-5xl md:text-6xl lg:text-[64px] font-bold leading-tight tracking-tight text-text-primary">
-            Tran Van Thuc
-          </h1>
+  const rootRef = useRef<HTMLElement>(null);
 
-          <div className="h-8 font-[family-name:var(--font-mono)] text-primary text-lg md:text-xl">
-            <div className="typewriter-text inline-block">
-              Flutter Expert &amp; Software Architect
-            </div>
+  useEffect(() => {
+    const root = rootRef.current!;
+    const chars = root.querySelectorAll('.hero-title .char');
+    const reveals = root.querySelectorAll('.hero-reveal');
+
+    const play = () => {
+      const tl = gsap.timeline();
+      tl.to(chars, {
+        y: 0,
+        duration: 1.1,
+        ease: 'power4.out',
+        stagger: 0.05,
+      });
+      tl.to(
+        reveals,
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12 },
+        '-=0.6'
+      );
+    };
+
+    let played = false;
+    const onDone = () => {
+      if (!played) {
+        played = true;
+        play();
+      }
+    };
+    window.addEventListener('preloader:done', onDone);
+    // fallback if preloader already finished / absent
+    const fallback = setTimeout(onDone, 3200);
+
+    return () => {
+      window.removeEventListener('preloader:done', onDone);
+      clearTimeout(fallback);
+    };
+  }, []);
+
+  return (
+    <section id="intro" className="hero" ref={rootRef}>
+      <ParticleField />
+      <div className="hero-inner">
+        <div className="hero-title-wrap">
+          <span className="hero-overline label hero-reveal">
+            {profile.role.toUpperCase()} · FLUTTER / REACT NATIVE / NATIVE
+          </span>
+          <h1 className="hero-title" aria-label={profile.displayName}>
+            {profile.displayName.split('').map((c, i) => (
+              <span className="mask" key={i}>
+                <span className="char" style={{ transform: 'translateY(110%)' }}>
+                  {c}
+                </span>
+              </span>
+            ))}
+          </h1>
+        </div>
+
+        <div className="hero-bottom">
+          <div className="hero-card hero-reveal">
+            <h3>
+              Mobile developer,
+              <br />
+              based in
+              <br />
+              Ho Chi Minh City.
+            </h3>
+            <div className="div" />
+            <p>
+              Three years turning product ideas into apps people actually use — from
+              factories to school buses.
+            </p>
           </div>
 
-          <p className="text-text-muted text-base md:text-lg max-w-md leading-relaxed mt-4">
-            Engineer specialized in high-performance mobile applications. Bridging
-            cross-platform efficiency with native power.
+          <p className="hero-blurb hero-reveal">
+            {profile.heroBlurb.split('Thuc').map((part, i) =>
+              i === 0 ? (
+                <span key={i}>{part}</span>
+              ) : (
+                <span key={i}>
+                  <span className="accent">Thuc</span>
+                  {part}
+                </span>
+              )
+            )}
           </p>
 
-          <div className="flex items-center gap-3 mt-8 pt-6">
-            <div className="glass-panel px-4 py-2 rounded-full flex items-center gap-2 w-fit">
-              <div className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
-              </div>
-              <span className="text-sm font-medium text-text-primary">
-                Available for new opportunities
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 mt-4 text-text-muted">
-            <span className="material-symbols-outlined text-lg">location_on</span>
-            <span className="text-sm">Ho Chi Minh City, Vietnam</span>
-          </div>
-
-          <div className="mt-12 flex gap-4">
-            <a
-              href="#projects"
-              className="bg-primary/10 text-primary border border-primary/30 px-6 py-3 rounded-lg font-[family-name:var(--font-display)] font-semibold hover:bg-primary hover:text-bg-dark transition-all duration-300 flex items-center gap-2"
-            >
-              View Projects{' '}
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
+          <div className="hero-meta hero-reveal">
+            <span className="chip label">
+              <span className="live" />
+              OPEN TO SENIOR ROLES
+            </span>
+            <span className="label">UIT · COMPUTER SCIENCE</span>
+            <span className="label">EST. 2023 — PRESENT</span>
           </div>
         </div>
-      </div>
-
-      {/* Right: Skills Matrix */}
-      <div className="lg:w-1/2 pt-12 lg:pt-32 pb-24">
-        <SkillGroup title="Core Competencies" skills={CORE_SKILLS} />
-        <SkillGroup title="Native & Integrations" skills={NATIVE_SKILLS} />
-        <SkillGroup title="Tools & Ecosystem" skills={TOOL_SKILLS} />
       </div>
     </section>
   );

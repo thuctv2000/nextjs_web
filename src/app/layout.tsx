@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Manrope, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Manrope, JetBrains_Mono, Archivo, DM_Mono, Literata } from "next/font/google";
 import { AppProvider } from "@/presentation/providers";
 import "./globals.css";
 
@@ -21,6 +21,28 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["500"],
 });
 
+// Portfolio landing page (design DNA: oryzo.ai) — namespaced so it doesn't
+// override the fonts used by the auth / lixi / face-filter routes above.
+const archivo = Archivo({
+  variable: "--font-pf-display",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const dmMono = DM_Mono({
+  variable: "--font-pf-mono",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  display: "swap",
+});
+
+const literata = Literata({
+  variable: "--font-pf-serif",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -29,9 +51,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Tran Van Thuc | Flutter Expert & Software Architect",
+  title: "Tran Van Thuc — Mobile Developer",
   description:
-    "Engineer specialized in high-performance mobile applications. Bridging cross-platform efficiency with native power.",
+    "Flutter & React Native developer with 3 years of experience shipping cross-platform and native mobile apps. Based in Ho Chi Minh City.",
 };
 
 export default function RootLayout({
@@ -48,7 +70,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${manrope.variable} ${jetbrainsMono.variable} antialiased min-h-screen overflow-x-hidden`}
+        className={`${spaceGrotesk.variable} ${manrope.variable} ${jetbrainsMono.variable} ${archivo.variable} ${dmMono.variable} ${literata.variable} antialiased min-h-screen overflow-x-hidden`}
       >
         <AppProvider>{children}</AppProvider>
       </body>

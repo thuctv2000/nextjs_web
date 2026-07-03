@@ -1,14 +1,36 @@
-import { HeroSection } from "@/presentation/components/features/portfolio/hero-section";
-import { ProjectsSection } from "@/presentation/components/features/portfolio/projects-section";
-import { PortfolioFooter } from "@/presentation/components/features/portfolio/portfolio-footer";
-import { PortfolioPage } from "./portfolio-page";
+import {
+  SmoothScroll,
+  Cursor,
+  Preloader,
+  PortfolioHeader,
+  Frame,
+  HeroSection,
+  Marquee,
+  BigWord,
+  Craft,
+  Stats,
+  ProjectsSection,
+  ContactSection,
+} from "@/presentation/components/features/portfolio";
 
 export default function Home() {
   return (
-    <PortfolioPage>
-      <HeroSection />
-      <ProjectsSection />
-      <PortfolioFooter />
-    </PortfolioPage>
+    <div className="portfolio-root">
+      <SmoothScroll />
+      <Cursor />
+      <Preloader />
+      <PortfolioHeader />
+      <Frame />
+      <main>
+        <HeroSection />
+        <Marquee />
+        <BigWord />
+        <Craft />
+        <Stats />
+        <ProjectsSection />
+        <ContactSection />
+      </main>
+      <div className="grain" aria-hidden />
+    </div>
   );
 }
