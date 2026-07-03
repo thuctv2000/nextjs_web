@@ -18,35 +18,45 @@ export function HeroSection() {
     const chars = root.querySelectorAll('.hero-title .char');
     const reveals = root.querySelectorAll('.hero-reveal');
 
-    const play = () => {
-      const tl = gsap.timeline();
-      tl.to(chars, {
+    // card / blurb / meta reveal right after the preloader lifts
+    let revealed = false;
+    const playReveals = () => {
+      if (revealed) return;
+      revealed = true;
+      gsap.to(reveals, {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        stagger: 0.12,
+      });
+    };
+
+    // title chars rise as the particle glyph zooms into the camera
+    let titled = false;
+    const playTitle = () => {
+      if (titled) return;
+      titled = true;
+      gsap.to(chars, {
         y: 0,
         duration: 1.1,
         ease: 'power4.out',
         stagger: 0.05,
+        delay: 0.35,
       });
-      tl.to(
-        reveals,
-        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12 },
-        '-=0.6'
-      );
     };
 
-    let played = false;
-    const onDone = () => {
-      if (!played) {
-        played = true;
-        play();
-      }
-    };
-    window.addEventListener('preloader:done', onDone);
-    // fallback if preloader already finished / absent
-    const fallback = setTimeout(onDone, 3200);
+    window.addEventListener('preloader:done', playReveals);
+    window.addEventListener('herotext:zoom', playTitle);
+    // fallbacks if the preloader / WebGL morph never fire
+    const revealFallback = setTimeout(playReveals, 3200);
+    const titleFallback = setTimeout(playTitle, 7200);
 
     return () => {
-      window.removeEventListener('preloader:done', onDone);
-      clearTimeout(fallback);
+      window.removeEventListener('preloader:done', playReveals);
+      window.removeEventListener('herotext:zoom', playTitle);
+      clearTimeout(revealFallback);
+      clearTimeout(titleFallback);
     };
   }, []);
 
