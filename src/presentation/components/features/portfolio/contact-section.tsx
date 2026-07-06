@@ -43,6 +43,12 @@ export function ContactSection() {
   return (
     <section id="contact" className="contact" ref={rootRef}>
       <div className="glow" />
+      <span className="contact-arrow" aria-hidden>
+        ⟶
+      </span>
+      <span className="contact-side label">
+        AVAILABLE FOR SENIOR ROLES · HCMC / REMOTE
+      </span>
       <span className="label" style={{ color: 'var(--pf-color-grey-brown)' }}>
         GENERAL ENQUIRIES · REPLIES WITHIN 24H
       </span>

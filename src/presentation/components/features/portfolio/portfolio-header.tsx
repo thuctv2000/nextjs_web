@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { navLinks, profile } from '@/lib/portfolio-data';
 
 interface RollProps {
@@ -15,17 +16,43 @@ function Roll({ text }: RollProps) {
 }
 
 export function PortfolioHeader() {
+  const [activeId, setActiveId] = useState('');
+
+  useEffect(() => {
+    const ids = navLinks.map((l) => l.href.slice(1));
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        }
+      },
+      // a section is "active" while it crosses the upper-middle band
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+    sections.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <header className="site-header">
         <a href="#intro" className="logo">
           <span className="dot" />
-          THUC&nbsp;TRAN
+          <Roll text="THUC TRAN" />
         </a>
         <span className="site-tagline label-strong">{profile.tagline}</span>
         <nav className="site-nav label-strong">
           {navLinks.map((l) => (
-            <a key={l.href} href={l.href}>
+            <a
+              key={l.href}
+              href={l.href}
+              className={activeId === l.href.slice(1) ? 'active' : undefined}
+            >
               <Roll text={l.label} />
             </a>
           ))}

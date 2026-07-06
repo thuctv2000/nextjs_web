@@ -7,6 +7,18 @@ import { projects } from '@/lib/portfolio-data';
 
 gsap.registerPlugin(ScrollTrigger);
 
+function handleCardTilt(e: React.MouseEvent<HTMLElement>): void {
+  const card = e.currentTarget;
+  const rect = card.getBoundingClientRect();
+  const px = (e.clientX - rect.left) / rect.width - 0.5;
+  const py = (e.clientY - rect.top) / rect.height - 0.5;
+  card.style.transform = `perspective(900px) translateY(-8px) rotateX(${-py * 4}deg) rotateY(${px * 4}deg)`;
+}
+
+function resetCardTilt(e: React.MouseEvent<HTMLElement>): void {
+  e.currentTarget.style.transform = '';
+}
+
 export function ProjectsSection() {
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -78,6 +90,8 @@ export function ProjectsSection() {
             key={p.index}
             style={{ ['--accent' as string]: p.accent }}
             data-hover
+            onMouseMove={handleCardTilt}
+            onMouseLeave={resetCardTilt}
           >
             <div className="top">
               <span className="p-idx">{p.index}</span>

@@ -40,6 +40,9 @@ export function Craft() {
           <span className="idx">/{String(i + 1).padStart(2, '0')}</span>
           <h3>{r.title}</h3>
           <p>{r.detail}</p>
+          <span className="craft-arrow" aria-hidden>
+            →
+          </span>
         </div>
       ))}
     </section>

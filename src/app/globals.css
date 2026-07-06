@@ -968,7 +968,9 @@ body {
 }
 
 .portfolio-root .hero-title {
-  font-size: clamp(90px, 21vw, 340px);
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(96px, 28vw, 480px);
   line-height: 0.82;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -1264,6 +1266,23 @@ body {
   color: var(--pf-color-cream);
 }
 
+.portfolio-root .craft-row .craft-arrow {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translate(-10px, -50%);
+  font-family: var(--font-pf-mono), monospace;
+  font-size: 20px;
+  color: var(--pf-color-orange);
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.portfolio-root .craft-row:hover .craft-arrow {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
 /* ---------- stats ---------- */
 
 .portfolio-root .stats {
@@ -1362,6 +1381,15 @@ body {
   background: rgba(56, 36, 22, 0.35);
 }
 
+.portfolio-root .project-card:hover ul li {
+  color: var(--pf-color-cream-2);
+  border-top-color: rgba(255, 237, 215, 0.4);
+}
+
+.portfolio-root .project-card:hover .p-role {
+  color: var(--pf-color-cream-2);
+}
+
 .portfolio-root .project-card .top {
   display: flex;
   justify-content: space-between;
@@ -1424,6 +1452,7 @@ body {
   font-size: 13.5px;
   display: flex;
   gap: 10px;
+  transition: color 0.35s ease, border-top-color 0.35s ease;
 }
 
 .portfolio-root .project-card ul li::before {
@@ -1521,6 +1550,26 @@ body {
   transform-origin: left;
 }
 
+.portfolio-root .contact-arrow {
+  position: absolute;
+  right: var(--pf-pad-x);
+  top: 34%;
+  font-family: var(--font-pf-mono), monospace;
+  font-size: clamp(70px, 9vw, 150px);
+  color: var(--pf-color-brown);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.portfolio-root .contact-side {
+  position: absolute;
+  right: calc(var(--pf-pad-x) + 6px);
+  top: 55%;
+  writing-mode: vertical-rl;
+  color: var(--pf-color-grey-brown);
+  pointer-events: none;
+}
+
 .portfolio-root .contact-meta {
   margin-top: 10vh;
   display: grid;
@@ -1564,8 +1613,11 @@ body {
   .portfolio-root .hero-bottom { flex-direction: column; align-items: flex-start; gap: 24px; padding-bottom: 12vh; }
   .portfolio-root .hero-blurb { font-size: 17px; max-width: 90%; }
   .portfolio-root .hero-meta { align-items: flex-start; }
+  .portfolio-root .hero-title { font-size: clamp(80px, 24vw, 220px); }
   .portfolio-root .craft-row { grid-template-columns: 50px 1fr; }
   .portfolio-root .craft-row p { grid-column: 2; }
+  .portfolio-root .craft-row .craft-arrow { display: none; }
+  .portfolio-root .contact-arrow, .portfolio-root .contact-side { display: none; }
   .portfolio-root .stats { grid-template-columns: repeat(2, 1fr); gap: 40px 4vw; }
   /* mobile: gallery stacks vertically (pin disabled in Projects.tsx) */
   .portfolio-root .projects-track {
@@ -1590,7 +1642,7 @@ body {
   .portfolio-root .logo .dot { width: 7px; height: 7px; }
   .portfolio-root .site-nav { gap: 13px; font-size: 10px; letter-spacing: 0.06em; }
   .portfolio-root .hero-inner { padding: 0 5vw; }
-  .portfolio-root .hero-title { font-size: clamp(70px, 24vw, 120px); }
+  .portfolio-root .hero-title { font-size: clamp(70px, 30vw, 150px); }
   .portfolio-root .hero-card { max-width: 100%; padding: 20px; }
   .portfolio-root .hero-bottom { padding-bottom: 14vh; gap: 18px; }
   .portfolio-root .hero-blurb { font-size: 16px; }
