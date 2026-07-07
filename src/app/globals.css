@@ -1708,6 +1708,7 @@ html[data-pf-theme='light'] .portfolio-root .grain {
   .portfolio-root .logo { font-size: 12px; gap: 8px; letter-spacing: 0.02em; }
   .portfolio-root .logo .dot { width: 7px; height: 7px; }
   .portfolio-root .site-nav { gap: 13px; font-size: 10px; letter-spacing: 0.06em; }
+  .portfolio-root .theme-toggle { margin-left: 8px; }
   .portfolio-root .hero-inner { padding: 0 5vw; }
   .portfolio-root .hero-title { font-size: clamp(52px, 20vw, 110px); }
   .portfolio-root .hero-card { max-width: 100%; padding: 20px; }

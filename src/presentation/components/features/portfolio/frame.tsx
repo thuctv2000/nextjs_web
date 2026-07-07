@@ -6,26 +6,13 @@ export function Frame() {
   const [atEnd, setAtEnd] = useState(false);
 
   useEffect(() => {
-    const check = () => {
-      const footer = document.querySelector('.site-footer-row');
-      if (footer) {
-        setAtEnd(footer.getBoundingClientRect().top < window.innerHeight);
-      }
-    };
-    // scroll events for immediacy + rAF poll so state self-corrects on any
-    // rendered frame (identical setState values skip re-renders)
-    let raf = 0;
-    const loop = () => {
-      check();
-      raf = requestAnimationFrame(loop);
-    };
-    window.addEventListener('scroll', check, { passive: true });
-    raf = requestAnimationFrame(loop);
-    check();
-    return () => {
-      window.removeEventListener('scroll', check);
-      cancelAnimationFrame(raf);
-    };
+    const footer = document.querySelector('.site-footer-row');
+    if (!footer) return;
+    const io = new IntersectionObserver((entries) => {
+      setAtEnd(entries[0].isIntersecting);
+    });
+    io.observe(footer);
+    return () => io.disconnect();
   }, []);
 
   return (

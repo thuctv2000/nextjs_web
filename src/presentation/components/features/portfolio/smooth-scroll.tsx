@@ -9,6 +9,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function SmoothScroll() {
   useEffect(() => {
+    // touch devices scroll natively: Lenis inertia fights the platform
+    // rubber-band at the edges and queues reversed-direction input
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+      document.documentElement.style.scrollBehavior = 'smooth';
+      return () => {
+        document.documentElement.style.scrollBehavior = '';
+      };
+    }
+
     const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
     (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
 
