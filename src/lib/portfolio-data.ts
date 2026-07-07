@@ -108,7 +108,7 @@ export const projects: Project[] = [
       "Offline-first Hive layer with background sync",
       "Smart barcode parsing: product codes vs quantities",
     ],
-    accent: "#dc5000",
+    accent: "#0a84ff",
   },
   {
     index: "02",
@@ -123,7 +123,7 @@ export const projects: Project[] = [
       "Custom map markers, polylines, geo-triggers",
       "Multi-role auth with token & session handling",
     ],
-    accent: "#5d6c49",
+    accent: "#0d9bb5",
   },
   {
     index: "03",
@@ -138,7 +138,7 @@ export const projects: Project[] = [
       "VNPay & Momo online payment integration",
       "Pixel-accurate UI from Figma designs",
     ],
-    accent: "#f6e0c6",
+    accent: "#5e5ce6",
   },
   {
     index: "04",
@@ -153,7 +153,7 @@ export const projects: Project[] = [
       "Barcode + NFC attendance verification",
       "Background location with network resilience",
     ],
-    accent: "#dc5000",
+    accent: "#0a84ff",
   },
   {
     index: "05",
@@ -168,7 +168,7 @@ export const projects: Project[] = [
       "SSL/TLS certificate generation (Bouncy Castle)",
       "XML → Bitmap receipt rendering pipeline",
     ],
-    accent: "#5d6c49",
+    accent: "#0d9bb5",
   },
 ];
 

@@ -45,17 +45,17 @@ void main() {
 `;
 
 const FRAG = /* glsl */ `
+uniform vec3 uColLow;
+uniform vec3 uColHigh;
+uniform vec3 uColAccent;
 varying float vElev;
 varying float vRand;
 
 void main() {
   vec2 c = gl_PointCoord - 0.5;
   float a = smoothstep(0.5, 0.1, length(c));
-  vec3 cream = vec3(1.0, 0.929, 0.843);
-  vec3 orange = vec3(0.863, 0.313, 0.0);
-  vec3 brown = vec3(0.42, 0.30, 0.19);
-  vec3 col = mix(brown, cream, smoothstep(-0.4, 2.2, vElev));
-  col = mix(col, orange, smoothstep(1.6, 2.9, vElev) * 0.8);
+  vec3 col = mix(uColLow, uColHigh, smoothstep(-0.4, 2.2, vElev));
+  col = mix(col, uColAccent, smoothstep(1.6, 2.9, vElev) * 0.8);
   gl_FragColor = vec4(col, a * (0.35 + vRand * 0.5));
 }
 `;
@@ -146,11 +146,36 @@ export function ParticleField() {
       uniforms: {
         uTime: { value: 0 },
         uMouse: { value: new THREE.Vector2(0, 0) },
+        uColLow: { value: new THREE.Color('#31435a') },
+        uColHigh: { value: new THREE.Color('#eaf2fa') },
+        uColAccent: { value: new THREE.Color('#0a84ff') },
       },
     });
 
     const points = new THREE.Points(geo, mat);
     scene.add(points);
+
+    // theme-aware colors: read the palette vars, additive glow on dark,
+    // normal blending on light (additive washes out on bright backgrounds)
+    const applyTheme = () => {
+      const styles = getComputedStyle(document.documentElement);
+      const read = (name: string, fb: string) =>
+        styles.getPropertyValue(name).trim() || fb;
+      const isLight =
+        document.documentElement.getAttribute('data-pf-theme') === 'light';
+      mat.uniforms.uColHigh.value.set(
+        isLight ? read('--pf-color-cream-2', '#33475e') : read('--pf-color-cream', '#eaf2fa')
+      );
+      mat.uniforms.uColAccent.value.set(read('--pf-color-orange', '#0a84ff'));
+      mat.uniforms.uColLow.value.set(
+        isLight ? read('--pf-color-grey-brown', '#74859a') : '#31435a'
+      );
+      scene.fog!.color.set(read('--pf-color-black', '#0a0e14'));
+      mat.blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending;
+      mat.needsUpdate = true;
+    };
+    applyTheme();
+    window.addEventListener('pf-theme', applyTheme);
 
     const mouse = new THREE.Vector2(0, 0);
     const target = new THREE.Vector2(0, 0);

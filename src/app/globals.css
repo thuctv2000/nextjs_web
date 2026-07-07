@@ -623,18 +623,35 @@ body {
    ======================================== */
 
 :root {
-  /* design-dna: oryzo.ai palette */
-  --pf-color-cream: #ffedd7;
-  --pf-color-cream-2: #f6e0c6;
-  --pf-color-black: #100904;
-  --pf-color-brown: #382416;
-  --pf-color-grey-brown: #6c5f51;
-  --pf-color-orange: #dc5000;
-  --pf-color-green: #445231;
-  --pf-color-green-light: #5d6c49;
+  /* design-dna palette — Flutter/iOS blue edition (dark mode defaults).
+     Var names keep their original DNA roles:
+     cream = foreground · black = background · brown = surface · orange = accent */
+  --pf-color-cream: #eaf2fa;
+  --pf-color-cream-2: #c8d9ea;
+  --pf-color-black: #0a0e14;
+  --pf-color-brown: #16222f;
+  --pf-color-grey-brown: #5d7185;
+  --pf-color-orange: #0a84ff;
+  --pf-color-green: #1e3a5f;
+  --pf-color-green-light: #30d158;
 
   --pf-pad-x: 3.125vw;
   --pf-header-h: 60px;
+}
+
+html[data-pf-theme='light'] {
+  --pf-color-cream: #0e1826;
+  --pf-color-cream-2: #33475e;
+  --pf-color-black: #f2f6fa;
+  --pf-color-brown: #dce6f0;
+  --pf-color-grey-brown: #74859a;
+  --pf-color-orange: #0066d6;
+  --pf-color-green: #bcd4ec;
+  --pf-color-green-light: #1faa4a;
+}
+
+html[data-pf-theme='light'] .portfolio-root .grain {
+  opacity: 0.035;
 }
 
 .portfolio-root {
@@ -683,7 +700,7 @@ body {
 }
 
 .portfolio-root .dotted-b {
-  border-bottom: 1px dotted rgba(255, 237, 215, 0.35);
+  border-bottom: 1px dotted color-mix(in srgb, var(--pf-color-cream) 35%, transparent);
 }
 
 .portfolio-root .section-pad {
@@ -760,7 +777,7 @@ body {
 .portfolio-root .cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(255, 237, 215, 0.7);
+  border: 1px solid color-mix(in srgb, var(--pf-color-cream) 70%, transparent);
   margin: -18px 0 0 -18px;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
@@ -842,8 +859,8 @@ body {
 }
 
 @keyframes pf-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 80, 0, 0.6); }
-  50% { box-shadow: 0 0 0 9px rgba(220, 80, 0, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pf-color-orange) 60%, transparent); }
+  50% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--pf-color-orange) 0%, transparent); }
 }
 
 .portfolio-root .site-tagline {
@@ -863,6 +880,12 @@ body {
 
 .portfolio-root .site-nav a.active {
   border-bottom: 1px dotted var(--pf-color-cream);
+}
+
+.portfolio-root .theme-toggle {
+  margin-left: 28px;
+  padding-bottom: 4px;
+  letter-spacing: 0.1em;
 }
 
 .portfolio-root .side-tab {
@@ -1032,10 +1055,10 @@ body {
 
 .portfolio-root .hero-card {
   max-width: 300px;
-  background: rgba(56, 36, 22, 0.5);
+  background: color-mix(in srgb, var(--pf-color-brown) 50%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px dotted rgba(255, 237, 215, 0.3);
+  border: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
   padding: 26px;
 }
 
@@ -1048,7 +1071,7 @@ body {
 }
 
 .portfolio-root .hero-card .div {
-  border-top: 1px dotted rgba(255, 237, 215, 0.4);
+  border-top: 1px dotted color-mix(in srgb, var(--pf-color-cream) 40%, transparent);
   margin: 18px 0;
 }
 
@@ -1080,7 +1103,7 @@ body {
 }
 
 .portfolio-root .hero-meta .chip {
-  border: 1px solid rgba(255, 237, 215, 0.35);
+  border: 1px solid color-mix(in srgb, var(--pf-color-cream) 35%, transparent);
   border-radius: 999px;
   padding: 9px 16px;
   display: flex;
@@ -1104,8 +1127,8 @@ body {
 /* ---------- marquee ---------- */
 
 .portfolio-root .marquee-band {
-  border-top: 1px dotted rgba(255, 237, 215, 0.3);
-  border-bottom: 1px dotted rgba(255, 237, 215, 0.3);
+  border-top: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
+  border-bottom: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
   padding: 26px 0;
   overflow: hidden;
   background: var(--pf-color-black);
@@ -1173,7 +1196,7 @@ body {
   width: 60vw;
   height: 60vw;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(220, 80, 0, 0.14) 0%, transparent 60%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--pf-color-orange) 14%, transparent) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -1248,12 +1271,12 @@ body {
   gap: 3vw;
   align-items: baseline;
   padding: 30px 10px;
-  border-top: 1px dotted rgba(255, 237, 215, 0.3);
+  border-top: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
   transition: padding-left 0.4s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .portfolio-root .craft-row:last-child {
-  border-bottom: 1px dotted rgba(255, 237, 215, 0.3);
+  border-bottom: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
 }
 
 .portfolio-root .craft-row .idx {
@@ -1328,7 +1351,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2vw;
-  border-top: 1px dotted rgba(255, 237, 215, 0.3);
+  border-top: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
 }
 
 .portfolio-root .stat .num {
@@ -1403,12 +1426,12 @@ body {
   width: 42vw;
   min-width: 480px;
   max-width: 660px;
-  border: 1px dotted rgba(255, 237, 215, 0.35);
+  border: 1px dotted color-mix(in srgb, var(--pf-color-cream) 35%, transparent);
   padding: 3vw 2.6vw;
   display: flex;
   flex-direction: column;
   gap: 22px;
-  background: rgba(16, 9, 4, 0.6);
+  background: color-mix(in srgb, var(--pf-color-black) 60%, transparent);
   transition: border-color 0.35s ease, transform 0.35s ease, background 0.35s ease;
 }
 
@@ -1416,12 +1439,12 @@ body {
   border-style: solid;
   border-color: var(--accent, var(--pf-color-orange));
   transform: translateY(-8px);
-  background: rgba(56, 36, 22, 0.35);
+  background: color-mix(in srgb, var(--pf-color-brown) 35%, transparent);
 }
 
 .portfolio-root .project-card:hover ul li {
   color: var(--pf-color-cream-2);
-  border-top-color: rgba(255, 237, 215, 0.4);
+  border-top-color: color-mix(in srgb, var(--pf-color-cream) 40%, transparent);
 }
 
 .portfolio-root .project-card:hover .p-role {
@@ -1472,7 +1495,7 @@ body {
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border: 1px solid rgba(255, 237, 215, 0.3);
+  border: 1px solid color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
   border-radius: 999px;
   padding: 6px 12px;
   color: var(--pf-color-cream-2);
@@ -1485,7 +1508,7 @@ body {
 
 .portfolio-root .project-card ul li {
   padding: 10px 0;
-  border-top: 1px dotted rgba(255, 237, 215, 0.25);
+  border-top: 1px dotted color-mix(in srgb, var(--pf-color-cream) 25%, transparent);
   color: var(--pf-color-grey-brown);
   font-size: 13.5px;
   display: flex;
@@ -1531,7 +1554,7 @@ body {
   width: 90vw;
   height: 70vh;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(220, 80, 0, 0.16) 0%, transparent 65%);
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--pf-color-orange) 16%, transparent) 0%, transparent 65%);
   pointer-events: none;
 }
 
@@ -1613,7 +1636,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2vw;
-  border-top: 1px dotted rgba(255, 237, 215, 0.3);
+  border-top: 1px dotted color-mix(in srgb, var(--pf-color-cream) 30%, transparent);
   padding-top: 30px;
 }
 

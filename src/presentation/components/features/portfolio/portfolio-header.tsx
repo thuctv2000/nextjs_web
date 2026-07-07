@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { navLinks, profile } from '@/lib/portfolio-data';
+import { ThemeToggle } from './theme-toggle';
 
 interface RollProps {
   text: string;
@@ -56,6 +57,7 @@ export function PortfolioHeader() {
               <Roll text={l.label} />
             </a>
           ))}
+          <ThemeToggle />
         </nav>
       </header>
       <div className="side-tab">
