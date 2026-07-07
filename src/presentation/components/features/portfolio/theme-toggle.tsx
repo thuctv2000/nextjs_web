@@ -40,7 +40,9 @@ export function ThemeToggle() {
       data-hover
     >
       <span className="roll">
-        <span data-text={`◐ ${label}`}>◐ {label}</span>
+        <span data-text={`◐ ${label}`}>
+          ◐ <span className="tt-label">{label}</span>
+        </span>
       </span>
     </button>
   );

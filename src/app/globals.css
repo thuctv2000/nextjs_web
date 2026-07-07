@@ -715,6 +715,7 @@ html[data-pf-theme='light'] .portfolio-root .grain {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .portfolio-root .roll > span {
@@ -1708,6 +1709,7 @@ html[data-pf-theme='light'] .portfolio-root .grain {
   }
   .portfolio-root .projects-intro { width: auto; min-width: 0; gap: 18px; }
   .portfolio-root .projects-intro .arrow { transform: rotate(90deg); width: fit-content; }
+  .portfolio-root .projects-intro .arrow .arrow-more { display: none; }
   .portfolio-root .project-card { width: 100%; min-width: 0; max-width: none; padding: 26px 22px; }
   .portfolio-root .projects-outro { display: none; }
   .portfolio-root .contact-meta { grid-template-columns: repeat(2, 1fr); gap: 30px 4vw; }
@@ -1721,6 +1723,8 @@ html[data-pf-theme='light'] .portfolio-root .grain {
   .portfolio-root .logo .dot { width: 7px; height: 7px; }
   .portfolio-root .site-nav { gap: 13px; font-size: 10px; letter-spacing: 0.06em; }
   .portfolio-root .theme-toggle { margin-left: 8px; }
+  .portfolio-root .theme-toggle .tt-label { display: none; }
+  .portfolio-root .hero-overline .overline-tail { display: none; }
   .portfolio-root .hero-inner { padding: 0 5vw; }
   .portfolio-root .hero-title { font-size: clamp(52px, 20vw, 110px); }
   .portfolio-root .hero-card { max-width: 100%; padding: 20px; }

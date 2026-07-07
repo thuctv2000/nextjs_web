@@ -42,9 +42,8 @@ export function PortfolioHeader() {
   return (
     <>
       <header className="site-header">
-        <a href="#intro" className="logo">
+        <a href="#intro" className="logo" aria-label="Back to top">
           <span className="dot" />
-          <Roll text="THUC TRAN" />
         </a>
         <span className="site-tagline label-strong">{profile.tagline}</span>
         <nav className="site-nav label-strong">

@@ -220,8 +220,8 @@ export function HeroSection() {
       <div className="hero-inner">
         <div className="hero-title-wrap">
           <span className="hero-overline label hero-reveal">
-            {profile.name.toUpperCase()} — {profile.role.toUpperCase()} · FLUTTER /
-            REACT NATIVE / NATIVE
+            {profile.name.toUpperCase()} — {profile.role.toUpperCase()}
+            <span className="overline-tail"> · FLUTTER / REACT NATIVE / NATIVE</span>
           </span>
           <h1
             className="hero-title"

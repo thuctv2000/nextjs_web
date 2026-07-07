@@ -81,7 +81,9 @@ export function ProjectsSection() {
             Five production apps across factories, logistics fleets, co-working spaces,
             school buses and point-of-sale — keep scrolling.
           </p>
-          <span className="arrow">→→→</span>
+          <span className="arrow" aria-hidden>
+            <span className="arrow-more">→→</span>→
+          </span>
         </div>
 
         {projects.map((p) => (
