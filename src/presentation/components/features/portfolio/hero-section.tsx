@@ -102,21 +102,23 @@ export function HeroSection() {
 
       if (dune) {
         const states: RideState[] = [];
+        const total = chars.length;
         const lineEls = root.querySelectorAll('.hero-line');
         lineEls.forEach((lineEl, row) => {
           const rowChars = lineEl.querySelectorAll<HTMLElement>('.char');
-          const n = rowChars.length;
-          rowChars.forEach((char, j) => {
+          rowChars.forEach((char) => {
             const rect = char.getBoundingClientRect();
             const i = states.length;
             const state: RideState = {
               char,
-              // spread the row across the distant surface; row 2 one rank nearer
+              // one readable rank: "LAZY PANDA" left→right on the surface,
+              // with a small gap between the two words
               xWorld:
-                (n === 1 ? 0 : j / (n - 1) - 0.5) * (row === 0 ? 14 : 22) +
-                gsap.utils.random(-0.8, 0.8),
-              zFar: (row === 0 ? -12 : -8) + gsap.utils.random(-1.5, 1.5),
-              zNear: 9 + gsap.utils.random(0, 2),
+                (i / (total - 1) - 0.5) * 24 +
+                (row === 1 ? 1.6 : -1.6) +
+                gsap.utils.random(-0.4, 0.4),
+              zFar: -4 + gsap.utils.random(-1, 1),
+              zNear: 10.5 + gsap.utils.random(0, 1.5),
               finalX: rect.left + rect.width / 2,
               finalBottom: rect.bottom,
               phase: Math.random() * Math.PI * 2,
@@ -134,9 +136,9 @@ export function HeroSection() {
             });
             gsap.to(state.progress, {
               t: 1,
-              duration: 1.5,
+              duration: 1.7,
               ease: 'power2.inOut',
-              delay: 1.3 + i * 0.22,
+              delay: 1.4 + i * 0.22,
               onComplete: () => {
                 state.done = true;
                 gsap.set(char, { x: 0, y: 0, scale: 1, rotation: 0 });
@@ -153,8 +155,9 @@ export function HeroSection() {
             active = true;
             const z = s.zFar + (s.zNear - s.zFar) * s.progress.t;
             const p = dune.project(s.xWorld, z);
-            // blend from the projected surface point into the title slot
-            const mix = smoothstep(0.55, 1, s.progress.t);
+            // ride the surface for most of the trip, lift into the title
+            // slot only at the very end
+            const mix = smoothstep(0.68, 1, s.progress.t);
             const scaleProj = Math.min(1, 6.2 / p.dist);
             gsap.set(s.char, {
               x: (p.x - s.finalX) * (1 - mix),
@@ -190,7 +193,7 @@ export function HeroSection() {
       });
 
       // hand line 1 over to the breathing loop once every letter settled
-      const settle = 1.3 + (chars.length - 1) * 0.22 + 1.5;
+      const settle = 1.4 + (chars.length - 1) * 0.22 + 1.7;
       handoff = setTimeout(() => {
         title.classList.add('cycling');
         breath = setTimeout(swap, HOLD_WORD_MS);
