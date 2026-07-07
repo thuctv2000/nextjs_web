@@ -836,6 +836,30 @@ html[data-pf-theme='light'] .portfolio-root .grain {
   justify-content: space-between;
   padding: 24px var(--pf-pad-x);
   pointer-events: none;
+  border-bottom: 1px dotted transparent;
+  transition:
+    transform 0.45s cubic-bezier(0.76, 0, 0.24, 1),
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* off the top: themed backdrop so content can't clash with the nav */
+.portfolio-root .site-header.scrolled {
+  background: color-mix(in srgb, var(--pf-color-black) 92%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--pf-color-cream) 15%, transparent);
+}
+
+@media (min-width: 901px) {
+  .portfolio-root .site-header.scrolled {
+    background: color-mix(in srgb, var(--pf-color-black) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* scrolling down tucks the header away; scrolling up brings it back */
+.portfolio-root .site-header.nav-hidden {
+  transform: translateY(-100%);
 }
 
 .portfolio-root .site-header > * {

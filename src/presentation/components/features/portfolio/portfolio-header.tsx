@@ -18,6 +18,34 @@ function Roll({ text }: RollProps) {
 
 export function PortfolioHeader() {
   const [activeId, setActiveId] = useState('');
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+
+  // themed background once off the top; hide on scroll down, reveal on up
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        setScrolled(y > 24);
+        const delta = y - lastY;
+        if (y < 80) {
+          setHidden(false);
+        } else if (delta > 6) {
+          setHidden(true);
+        } else if (delta < -6) {
+          setHidden(false);
+        }
+        lastY = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const ids = navLinks.map((l) => l.href.slice(1));
@@ -41,7 +69,9 @@ export function PortfolioHeader() {
 
   return (
     <>
-      <header className="site-header">
+      <header
+        className={`site-header${scrolled ? ' scrolled' : ''}${hidden ? ' nav-hidden' : ''}`}
+      >
         <a href="#intro" className="logo" aria-label="Back to top">
           <span className="dot" />
         </a>
