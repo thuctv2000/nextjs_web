@@ -111,7 +111,7 @@ export function ParticleField() {
     const isMobile = window.innerWidth < 768;
 
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.25 : 2));
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     wrap.appendChild(renderer.domElement);
 
@@ -189,6 +189,36 @@ export function ParticleField() {
 
     const clock = new THREE.Clock();
 
+    // render only while the hero is on screen and the tab is visible —
+    // an always-on rAF loop starves the compositor during fast scrolling
+    let raf = 0;
+    let heroVisible = true;
+    let pageVisible = !document.hidden;
+    let running = false;
+
+    const syncRunning = () => {
+      const shouldRun = heroVisible && pageVisible;
+      if (shouldRun === running) return;
+      running = shouldRun;
+      if (running) {
+        raf = requestAnimationFrame(loop);
+      } else {
+        cancelAnimationFrame(raf);
+      }
+    };
+
+    const heroIo = new IntersectionObserver((entries) => {
+      heroVisible = entries[0].isIntersecting;
+      syncRunning();
+    });
+    heroIo.observe(wrap);
+
+    const onVisibility = () => {
+      pageVisible = !document.hidden;
+      syncRunning();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
     // let the DOM hero letters stand on / ride the same surface: project a
     // dune point (world x,z) to screen px using the live camera
     const projV = new THREE.Vector3();
@@ -208,8 +238,8 @@ export function ParticleField() {
     };
     (window as unknown as { __dune?: DuneApi }).__dune = dune;
 
-    let raf = 0;
-    const loop = () => {
+    function loop(): void {
+      if (!running) return;
       const t = clock.getElapsedTime();
       mouse.lerp(target, 0.05);
       mat.uniforms.uTime.value = t;
@@ -219,8 +249,8 @@ export function ParticleField() {
       camera.lookAt(0, 0.5, 0);
       renderer.render(scene, camera);
       raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
+    }
+    syncRunning();
 
     const onResize = () => {
       camera.aspect = wrap.clientWidth / wrap.clientHeight;
@@ -230,7 +260,10 @@ export function ParticleField() {
     window.addEventListener('resize', onResize);
 
     return () => {
+      running = false;
       cancelAnimationFrame(raf);
+      heroIo.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
       delete (window as unknown as { __dune?: DuneApi }).__dune;
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('resize', onResize);

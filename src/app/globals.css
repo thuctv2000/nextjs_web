@@ -1155,6 +1155,10 @@ html[data-pf-theme='light'] .portfolio-root .grain {
   animation-duration: 36s;
 }
 
+.portfolio-root .marquee-band.paused .marquee-chunk {
+  animation-play-state: paused;
+}
+
 .portfolio-root .marquee-chunk span {
   font-size: clamp(22px, 2.6vw, 38px);
   font-weight: 600;
@@ -1674,6 +1678,14 @@ html[data-pf-theme='light'] .portfolio-root .grain {
 }
 
 @media (max-width: 900px) {
+  /* mobile GPU relief: drop the 3x-viewport animated grain layer and the
+     per-frame backdrop blur — both major compositor costs on phones */
+  .portfolio-root .grain { display: none; }
+  .portfolio-root .hero-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: color-mix(in srgb, var(--pf-color-brown) 88%, transparent);
+  }
   .portfolio-root .site-tagline { display: none; }
   .portfolio-root .site-nav { gap: 18px; }
   .portfolio-root .marquee-row + .marquee-row { margin-top: 12px; }
