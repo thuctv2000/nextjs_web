@@ -60,6 +60,37 @@ void main() {
 }
 `;
 
+// CPU mirror of the vertex-shader noise so DOM elements can ride the dunes
+function hash2(x: number, y: number): number {
+  const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+  return s - Math.floor(s);
+}
+
+function noise2(x: number, y: number): number {
+  const ix = Math.floor(x);
+  const iy = Math.floor(y);
+  const fx = x - ix;
+  const fy = y - iy;
+  const ux = fx * fx * (3 - 2 * fx);
+  const uy = fy * fy * (3 - 2 * fy);
+  const a = hash2(ix, iy);
+  const b = hash2(ix + 1, iy);
+  const c = hash2(ix, iy + 1);
+  const d = hash2(ix + 1, iy + 1);
+  return a + (b - a) * ux + (c - a) * uy + (a - b - c + d) * ux * uy;
+}
+
+function duneHeight(x: number, z: number, t: number): number {
+  return (
+    noise2(x * 0.09 + t, z * 0.09 + t) * 1.6 +
+    noise2(x * 0.22 - t * 0.6, z * 0.22 - t * 0.6) * 0.7
+  );
+}
+
+export interface DuneApi {
+  project: (x: number, z: number) => { x: number; y: number; dist: number };
+}
+
 export function ParticleField() {
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -132,6 +163,26 @@ export function ParticleField() {
     window.addEventListener('mousemove', onMove);
 
     const clock = new THREE.Clock();
+
+    // let the DOM hero letters stand on / ride the same surface: project a
+    // dune point (world x,z) to screen px using the live camera
+    const projV = new THREE.Vector3();
+    const dune: DuneApi = {
+      project(x: number, z: number) {
+        const t = clock.getElapsedTime() * 0.25;
+        const y = duneHeight(x, z, t);
+        projV.set(x, y, z);
+        const dist = camera.position.distanceTo(projV);
+        projV.project(camera);
+        return {
+          x: (projV.x * 0.5 + 0.5) * wrap.clientWidth,
+          y: (-projV.y * 0.5 + 0.5) * wrap.clientHeight,
+          dist,
+        };
+      },
+    };
+    (window as unknown as { __dune?: DuneApi }).__dune = dune;
+
     let raf = 0;
     const loop = () => {
       const t = clock.getElapsedTime();
@@ -155,6 +206,7 @@ export function ParticleField() {
 
     return () => {
       cancelAnimationFrame(raf);
+      delete (window as unknown as { __dune?: DuneApi }).__dune;
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('resize', onResize);
       geo.dispose();

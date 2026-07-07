@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import dynamic from 'next/dynamic';
 import { profile } from '@/lib/portfolio-data';
+import type { DuneApi } from './particle-field';
 
 const ParticleField = dynamic(
   () => import('./particle-field').then((mod) => mod.ParticleField),
@@ -15,6 +16,23 @@ const WORD = 'LAZY';
 const PHRASE = 'LESS WORK, MORE SHIPPED';
 const HOLD_WORD_MS = 3400;
 const HOLD_PHRASE_MS = 4600;
+
+function smoothstep(a: number, b: number, v: number): number {
+  const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}
+
+interface RideState {
+  char: HTMLElement;
+  xWorld: number;
+  zFar: number;
+  zNear: number;
+  finalX: number;
+  finalBottom: number;
+  phase: number;
+  progress: { t: number };
+  done: boolean;
+}
 
 export function HeroSection() {
   const rootRef = useRef<HTMLElement>(null);
@@ -71,61 +89,96 @@ export function HeroSection() {
       });
     };
 
-    // entrance: letters ride the particle net, bob with the waves, then
-    // settle into the two-line title one by one
+    // entrance: letters spawn far out ON the dune surface, ride the actual
+    // waves (projected from the 3D scene each frame), then slide toward the
+    // camera and lift into the two-line title one by one
+    let rideTicker: (() => void) | null = null;
+
     const play = () => {
       if (played) return;
       played = true;
 
-      // letters materialize far away on the dune horizon — tiny, hazy,
-      // clustered toward the center — then fly forward into the title
-      const horizonY = window.innerHeight * 0.4;
-      const centerX = window.innerWidth / 2;
+      const dune = (window as unknown as { __dune?: DuneApi }).__dune;
 
-      chars.forEach((char, i) => {
-        const rect = char.getBoundingClientRect();
-        const dy = horizonY - rect.top + gsap.utils.random(-10, 14);
-        const dx =
-          (centerX - (rect.left + rect.width / 2)) * 0.6 +
-          gsap.utils.random(-40, 40);
+      if (dune) {
+        const states: RideState[] = [];
+        const lineEls = root.querySelectorAll('.hero-line');
+        lineEls.forEach((lineEl, row) => {
+          const rowChars = lineEl.querySelectorAll<HTMLElement>('.char');
+          const n = rowChars.length;
+          rowChars.forEach((char, j) => {
+            const rect = char.getBoundingClientRect();
+            const i = states.length;
+            const state: RideState = {
+              char,
+              // spread the row across the distant surface; row 2 one rank nearer
+              xWorld:
+                (n === 1 ? 0 : j / (n - 1) - 0.5) * (row === 0 ? 14 : 22) +
+                gsap.utils.random(-0.8, 0.8),
+              zFar: (row === 0 ? -12 : -8) + gsap.utils.random(-1.5, 1.5),
+              zNear: 9 + gsap.utils.random(0, 2),
+              finalX: rect.left + rect.width / 2,
+              finalBottom: rect.bottom,
+              phase: Math.random() * Math.PI * 2,
+              progress: { t: 0 },
+              done: false,
+            };
+            states.push(state);
 
-        gsap.set(char, {
-          y: dy,
-          x: dx,
-          scale: 0.18,
-          rotation: gsap.utils.random(-8, 8),
-          opacity: 0,
+            gsap.set(char, { opacity: 0, transformOrigin: '50% 100%' });
+            gsap.to(char, {
+              opacity: 1,
+              duration: 0.5,
+              ease: 'power2.out',
+              delay: 0.1 * i,
+            });
+            gsap.to(state.progress, {
+              t: 1,
+              duration: 1.5,
+              ease: 'power2.inOut',
+              delay: 1.3 + i * 0.22,
+              onComplete: () => {
+                state.done = true;
+                gsap.set(char, { x: 0, y: 0, scale: 1, rotation: 0 });
+              },
+            });
+          });
         });
 
-        gsap.to(char, {
-          opacity: 0.9,
-          duration: 0.45,
-          ease: 'power2.out',
-          delay: 0.12 * i,
+        rideTicker = () => {
+          const now = performance.now() / 1000;
+          let active = false;
+          for (const s of states) {
+            if (s.done) continue;
+            active = true;
+            const z = s.zFar + (s.zNear - s.zFar) * s.progress.t;
+            const p = dune.project(s.xWorld, z);
+            // blend from the projected surface point into the title slot
+            const mix = smoothstep(0.55, 1, s.progress.t);
+            const scaleProj = Math.min(1, 6.2 / p.dist);
+            gsap.set(s.char, {
+              x: (p.x - s.finalX) * (1 - mix),
+              y: (p.y - s.finalBottom) * (1 - mix),
+              scale: scaleProj + (1 - scaleProj) * mix,
+              rotation: Math.sin(now * 2 + s.phase) * 4 * (1 - mix),
+            });
+          }
+          if (!active && rideTicker) {
+            gsap.ticker.remove(rideTicker);
+            rideTicker = null;
+          }
+        };
+        gsap.ticker.add(rideTicker);
+      } else {
+        // WebGL absent: simple fade-up
+        chars.forEach((char, i) => {
+          gsap.fromTo(
+            char,
+            { y: 60, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: 0.8 + i * 0.08 }
+          );
         });
-        // sway with the distant waves
-        gsap.to(char, {
-          y: dy - 7,
-          rotation: gsap.utils.random(-5, 5),
-          duration: gsap.utils.random(0.6, 0.9),
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-          delay: 0.12 * i,
-        });
-
-        gsap.to(char, {
-          y: 0,
-          x: 0,
-          scale: 1,
-          rotation: 0,
-          opacity: 1,
-          duration: 1.15,
-          ease: 'power3.inOut',
-          delay: 1.2 + i * 0.22,
-          overwrite: 'auto',
-        });
-      });
+      }
 
       gsap.to(reveals, {
         opacity: 1,
@@ -137,11 +190,11 @@ export function HeroSection() {
       });
 
       // hand line 1 over to the breathing loop once every letter settled
-      const settle = 1.2 + (chars.length - 1) * 0.22 + 1.15;
+      const settle = 1.3 + (chars.length - 1) * 0.22 + 1.5;
       handoff = setTimeout(() => {
         title.classList.add('cycling');
         breath = setTimeout(swap, HOLD_WORD_MS);
-      }, settle * 1000 + 600);
+      }, settle * 1000 + 500);
     };
 
     window.addEventListener('preloader:done', play);
@@ -153,6 +206,7 @@ export function HeroSection() {
       clearTimeout(fallback);
       if (handoff) clearTimeout(handoff);
       if (breath) clearTimeout(breath);
+      if (rideTicker) gsap.ticker.remove(rideTicker);
       gsap.killTweensOf(line.querySelectorAll('.char'));
     };
   }, []);
