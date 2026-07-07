@@ -77,27 +77,36 @@ export function HeroSection() {
       if (played) return;
       played = true;
 
+      // letters materialize far away on the dune horizon — tiny, hazy,
+      // clustered toward the center — then fly forward into the title
+      const horizonY = window.innerHeight * 0.4;
+      const centerX = window.innerWidth / 2;
+
       chars.forEach((char, i) => {
-        const surfaceY = window.innerHeight * 0.52;
-        const driftX = gsap.utils.random(-0.12, 0.12) * window.innerWidth;
+        const rect = char.getBoundingClientRect();
+        const dy = horizonY - rect.top + gsap.utils.random(-10, 14);
+        const dx =
+          (centerX - (rect.left + rect.width / 2)) * 0.6 +
+          gsap.utils.random(-40, 40);
 
         gsap.set(char, {
-          y: surfaceY,
-          x: driftX,
-          scale: 0.38,
-          rotation: gsap.utils.random(-10, 10),
+          y: dy,
+          x: dx,
+          scale: 0.18,
+          rotation: gsap.utils.random(-8, 8),
           opacity: 0,
         });
 
         gsap.to(char, {
-          opacity: 1,
+          opacity: 0.9,
           duration: 0.45,
           ease: 'power2.out',
           delay: 0.12 * i,
         });
+        // sway with the distant waves
         gsap.to(char, {
-          y: surfaceY - 16,
-          rotation: gsap.utils.random(-6, 6),
+          y: dy - 7,
+          rotation: gsap.utils.random(-5, 5),
           duration: gsap.utils.random(0.6, 0.9),
           ease: 'sine.inOut',
           yoyo: true,
@@ -110,6 +119,7 @@ export function HeroSection() {
           x: 0,
           scale: 1,
           rotation: 0,
+          opacity: 1,
           duration: 1.15,
           ease: 'power3.inOut',
           delay: 1.2 + i * 0.22,
