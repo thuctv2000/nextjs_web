@@ -10,21 +10,73 @@ const ParticleField = dynamic(
   { ssr: false }
 );
 
+// line 1 breathes between the word and its meaning
+const WORD = 'LAZY';
+const PHRASE = 'LESS WORK, MORE SHIPPED';
+const HOLD_WORD_MS = 3400;
+const HOLD_PHRASE_MS = 4600;
+
 export function HeroSection() {
   const rootRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const root = rootRef.current!;
+    const title = root.querySelector<HTMLElement>('.hero-title')!;
+    const line = root.querySelector<HTMLElement>('.line-rotor')!;
     const chars = root.querySelectorAll<HTMLElement>('.hero-title .char');
     const reveals = root.querySelectorAll('.hero-reveal');
 
     let played = false;
+    let showingPhrase = false;
+    let handoff: ReturnType<typeof setTimeout> | undefined;
+    let breath: ReturnType<typeof setTimeout> | undefined;
+
+    // after the entrance, line 1 is owned imperatively: React never
+    // re-renders it, so the DOM swap below is safe
+    const rebuildLine = (text: string): NodeListOf<HTMLElement> => {
+      line.innerHTML = '';
+      for (const c of text.split('')) {
+        const mask = document.createElement('span');
+        mask.className = 'mask';
+        const char = document.createElement('span');
+        char.className = 'char';
+        char.textContent = c === ' ' ? ' ' : c;
+        mask.appendChild(char);
+        line.appendChild(mask);
+      }
+      return line.querySelectorAll<HTMLElement>('.char');
+    };
+
+    // roll the current text up and out, swap word ⇄ phrase, roll back in
+    const swap = () => {
+      const current = line.querySelectorAll<HTMLElement>('.char');
+      gsap.to(current, {
+        yPercent: -115,
+        duration: 0.4,
+        ease: 'power2.in',
+        stagger: 0.03,
+        onComplete: () => {
+          showingPhrase = !showingPhrase;
+          line.classList.toggle('phrase', showingPhrase);
+          const fresh = rebuildLine(showingPhrase ? PHRASE : WORD);
+          gsap.set(fresh, { yPercent: 115, opacity: 1 });
+          gsap.to(fresh, {
+            yPercent: 0,
+            duration: 0.5,
+            ease: 'power3.out',
+            stagger: 0.025,
+          });
+          breath = setTimeout(swap, showingPhrase ? HOLD_PHRASE_MS : HOLD_WORD_MS);
+        },
+      });
+    };
+
+    // entrance: letters ride the particle net, bob with the waves, then
+    // settle into the two-line title one by one
     const play = () => {
       if (played) return;
       played = true;
 
-      // each letter drops in standing on the particle net, bobs with the
-      // waves, then walks up into its slot in the title one by one
       chars.forEach((char, i) => {
         const surfaceY = window.innerHeight * 0.52;
         const driftX = gsap.utils.random(-0.12, 0.12) * window.innerWidth;
@@ -37,13 +89,11 @@ export function HeroSection() {
           opacity: 0,
         });
 
-        // surface bob — killed automatically when the departure tween
-        // overwrites y/rotation
         gsap.to(char, {
           opacity: 1,
           duration: 0.45,
           ease: 'power2.out',
-          delay: 0.18 * i,
+          delay: 0.12 * i,
         });
         gsap.to(char, {
           y: surfaceY - 16,
@@ -52,10 +102,9 @@ export function HeroSection() {
           ease: 'sine.inOut',
           yoyo: true,
           repeat: -1,
-          delay: 0.18 * i,
+          delay: 0.12 * i,
         });
 
-        // departure: one letter at a time rises into position
         gsap.to(char, {
           y: 0,
           x: 0,
@@ -63,7 +112,7 @@ export function HeroSection() {
           rotation: 0,
           duration: 1.15,
           ease: 'power3.inOut',
-          delay: 1.2 + i * 0.5,
+          delay: 1.2 + i * 0.22,
           overwrite: 'auto',
         });
       });
@@ -76,6 +125,13 @@ export function HeroSection() {
         stagger: 0.12,
         delay: 0.4,
       });
+
+      // hand line 1 over to the breathing loop once every letter settled
+      const settle = 1.2 + (chars.length - 1) * 0.22 + 1.15;
+      handoff = setTimeout(() => {
+        title.classList.add('cycling');
+        breath = setTimeout(swap, HOLD_WORD_MS);
+      }, settle * 1000 + 600);
     };
 
     window.addEventListener('preloader:done', play);
@@ -85,6 +141,9 @@ export function HeroSection() {
     return () => {
       window.removeEventListener('preloader:done', play);
       clearTimeout(fallback);
+      if (handoff) clearTimeout(handoff);
+      if (breath) clearTimeout(breath);
+      gsap.killTweensOf(line.querySelectorAll('.char'));
     };
   }, []);
 
@@ -94,14 +153,27 @@ export function HeroSection() {
       <div className="hero-inner">
         <div className="hero-title-wrap">
           <span className="hero-overline label hero-reveal">
-            {profile.role.toUpperCase()} · FLUTTER / REACT NATIVE / NATIVE
+            {profile.name.toUpperCase()} — {profile.role.toUpperCase()} · FLUTTER /
+            REACT NATIVE / NATIVE
           </span>
-          <h1 className="hero-title" aria-label={profile.displayName}>
-            {profile.displayName.split('').map((c, i) => (
-              <span className="char" key={i}>
-                {c}
-              </span>
-            ))}
+          <h1
+            className="hero-title"
+            aria-label="LAZY PANDA — LESS WORK, MORE SHIPPED"
+          >
+            <span className="hero-line line-rotor" aria-hidden>
+              {WORD.split('').map((c, i) => (
+                <span className="mask" key={i}>
+                  <span className="char">{c}</span>
+                </span>
+              ))}
+            </span>
+            <span className="hero-line line-spread" aria-hidden>
+              {'PANDA'.split('').map((c, i) => (
+                <span className="char" key={i}>
+                  {c}
+                </span>
+              ))}
+            </span>
           </h1>
         </div>
 
